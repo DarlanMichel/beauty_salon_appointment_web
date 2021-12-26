@@ -11,18 +11,18 @@ class ServiceCategoryModule extends Module {
   final List<Bind> binds = [
     Bind.lazySingleton((i)=> HasuraConnect("https://beauty-salon-appointment.herokuapp.com/v1/graphql")),
     //datasource
-    Bind.lazySingleton((i) => GetServiceCategoryHasuraDataSourceImp(i.get())),
+    Bind.lazySingleton((i) => GetServiceCategoryHasuraDataSourceImp(i())),
     //repositories
-    Bind.lazySingleton((i) => GetServiceCategoryRepositoryImp(i.get())),
-    //usecases
-    Bind.lazySingleton((i) => GetServiceCategoryUseCaseImp(i.get())),
+    Bind.lazySingleton((i) => GetServiceCategoryRepositoryImp(i())),
+    //useCases
+    Bind.lazySingleton((i) => GetServiceCategoryUseCaseImp(i())),
     //controllers
-    Bind.lazySingleton((i) => ServiceCategoryController(i.get())),
+    Bind.lazySingleton((i) => ServiceCategoryController(i())),
   ];
 
   @override
   final List<ModularRoute> routes = [
     ChildRoute(Modular.initialRoute,
-        child: (context, args) => ServiceCategoryPage()),
+        child: (context, args) => const ServiceCategoryPage()),
   ];
 }

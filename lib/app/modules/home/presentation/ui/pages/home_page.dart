@@ -1,9 +1,10 @@
-import 'package:beauty_salon_appointment_web/app/modules/home/presentation/ui/widgets/content_home_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/home/presentation/ui/widgets/menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -14,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if(constraints.maxWidth < 600){
+        if(constraints.maxWidth < 900){
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -23,22 +24,22 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
             ),
             drawer: Drawer(
-              shape: CircleBorder(),
-              child: MenuWidget(),
+              shape: const CircleBorder(),
+              child: const MenuWidget(),
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            body: ContentHomePage(),
+            body: RouterOutlet(),
           );
         }else{
           return Scaffold(
               body: Row(
                 children: [
-                  Align(
+                  const Align(
                       alignment: Alignment.centerLeft,
                       child: MenuWidget()
                   ),
                   Expanded(
-                    child: ContentHomePage(),
+                    child: RouterOutlet(),
                   )
                 ],
               )
