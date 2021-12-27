@@ -11,7 +11,8 @@ class ServiceCategoryPage extends StatefulWidget {
   _ServiceCategoryPageState createState() => _ServiceCategoryPageState();
 }
 
-class _ServiceCategoryPageState extends ModularState<ServiceCategoryPage, ServiceCategoryController> {
+class _ServiceCategoryPageState
+    extends ModularState<ServiceCategoryPage, ServiceCategoryController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,9 +23,7 @@ class _ServiceCategoryPageState extends ModularState<ServiceCategoryPage, Servic
           const Text(
             'Categorias de Serviços',
             textScaleFactor: 3.5,
-            style: TextStyle(
-                fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 20,
@@ -38,119 +37,151 @@ class _ServiceCategoryPageState extends ModularState<ServiceCategoryPage, Servic
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.55,
-            child: Observer(
-                builder: (context) {
-                  if(controller.listServiceCategoryEntity == null){
-                    return const Center(child: CircularProgressIndicator(),);
-                  } else{
-                    List<ServiceCategoryEntity> listCategory = controller.listServiceCategoryEntity!;
-                    if(listCategory.isEmpty){
-                      return const Center(child: Text('Sem categorias cadastradas!'),);
-                    }else{
-                      return ListView.builder(
-                          itemCount: listCategory.length,
-                          itemBuilder: (context, i){
-                            ServiceCategoryEntity category = listCategory[i];
-                            return Container(
-                              height: 150,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black)
-                              ),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                      child: CircleAvatar(
-                                        radius: 70,
-                                        backgroundColor: const Color.fromRGBO(196, 196, 196, 1),
-                                        child: Image.network(category.picture, height: 90, width: 90,),
-                                      )
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Categoria: ${category.name}',
-                                        textScaleFactor: 2,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold
+            child: Observer(builder: (context) {
+              if (controller.listServiceCategoryEntity == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                List<ServiceCategoryEntity> listCategory =
+                    controller.listServiceCategoryEntity!;
+                if (listCategory.isEmpty) {
+                  return const Center(
+                    child: Text('Sem categorias cadastradas!'),
+                  );
+                } else {
+                  return ListView.builder(
+                      itemCount: listCategory.length,
+                      itemBuilder: (context, i) {
+                        ServiceCategoryEntity category = listCategory[i];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black)),
+                            child: Row(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    child: CircleAvatar(
+                                      radius: 70,
+                                      backgroundColor: const Color.fromRGBO(
+                                          196, 196, 196, 1),
+                                      child: Image.network(
+                                        category.picture,
+                                        height: 90,
+                                        width: 90,
+                                      ),
+                                    )),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Categoria: ${category.name}',
+                                      textScaleFactor: 2,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      height: 30,
+                                    ),
+                                    Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {},
+                                          child: const Text(
+                                            'Editar',
+                                            textScaleFactor: 1.2,
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    97, 97, 97, 1),
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                            fixedSize: const Size(110, 40),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30)),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 30,
-                                      ),
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: (){},
-                                            child: const Text(
-                                              'Editar',
-                                              textScaleFactor: 1.2,
-                                              style: TextStyle(
-                                                  color: Color.fromRGBO(97, 97, 97, 1),
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Theme.of(context).colorScheme.secondary,
-                                              fixedSize: const Size(110, 40),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(30)),
-                                            ),
+                                        const SizedBox(
+                                          width: 27,
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            int deleted = await controller
+                                                .deleteServiceCategory(
+                                                    category.id!);
+                                            if (deleted == 1) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                        title: Text(
+                                                            'Categoria ${category.name} removida com sucesso!'),
+                                                      ));
+                                              await controller
+                                                  .getServiceCategory();
+                                            }
+                                          },
+                                          child: const Text(
+                                            'Excluir',
+                                            textScaleFactor: 1.2,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                          const SizedBox(
-                                            width: 27,
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fixedSize: const Size(110, 40),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30)),
                                           ),
-                                          ElevatedButton(
-                                            onPressed: (){},
-                                            child: const Text(
-                                              'Excluir',
-                                              textScaleFactor: 1.2,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Theme.of(context).colorScheme.primary,
-                                              fixedSize: const Size(110, 40),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(30)),
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-                      );
-                    }
-                  }
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
                 }
-            ),
+              }
+            }),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-              onPressed: (){},
-              child: const Text(
-                'Nova Categoria',
-                textScaleFactor: 1.2,
-                style: TextStyle(
-                    color: Color.fromRGBO(97, 97, 97, 1),
-                    fontWeight: FontWeight.bold
+          Expanded(child: Container()),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  Modular.to.navigate('./new');
+                },
+                child: const Text(
+                  'Nova Categoria',
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                      color: Color.fromRGBO(97, 97, 97, 1),
+                      fontWeight: FontWeight.bold),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).colorScheme.secondary,
-                fixedSize: const Size(150, 40),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
+                style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).colorScheme.secondary,
+                  fixedSize: const Size(150, 40),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                ),
               ),
             ),
           )

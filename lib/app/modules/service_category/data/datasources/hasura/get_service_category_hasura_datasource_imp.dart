@@ -3,13 +3,14 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/data/d
 import 'package:dartz/dartz.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 
-class GetServiceCategoryHasuraDataSourceImp implements GetServiceCategoryDataSource{
+class GetServiceCategoryHasuraDataSourceImp
+    implements GetServiceCategoryDataSource {
   final HasuraConnect _hasuraConnect;
   GetServiceCategoryHasuraDataSourceImp(this._hasuraConnect);
 
   @override
-  Future<Either<Exception, List<ServiceCategoryDto>>> call() async{
-    try{
+  Future<Either<Exception, List<ServiceCategoryDto>>> call() async {
+    try {
       List<ServiceCategoryDto> listCategories = [];
       ServiceCategoryDto serviceCategoryDto;
       var query = '''
@@ -26,10 +27,8 @@ class GetServiceCategoryHasuraDataSourceImp implements GetServiceCategoryDataSou
         listCategories.add(serviceCategoryDto);
       }
       return Right(listCategories);
-    }catch(e){
+    } catch (e) {
       return Left(Exception('Hasura datasource error'));
     }
-
   }
-
 }

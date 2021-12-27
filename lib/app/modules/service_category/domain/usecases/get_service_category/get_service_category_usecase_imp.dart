@@ -3,13 +3,12 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/domain
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/get_service_category/get_service_category_usecase.dart';
 import 'package:dartz/dartz.dart';
 
-class GetServiceCategoryUseCaseImp implements GetServiceCategoryUseCase{
+class GetServiceCategoryUseCaseImp implements GetServiceCategoryUseCase {
   final GetServiceCategoryRepository _getServiceCategoryRepository;
   GetServiceCategoryUseCaseImp(this._getServiceCategoryRepository);
 
   @override
-  Future<Either<Exception, List<ServiceCategoryEntity>>> call() async{
+  Future<Either<Exception, List<ServiceCategoryEntity>>> call() async {
     return await _getServiceCategoryRepository();
   }
-
 }

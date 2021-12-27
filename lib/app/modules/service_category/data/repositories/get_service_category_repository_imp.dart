@@ -3,7 +3,7 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/domain
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/repositories/get_service_category_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetServiceCategoryRepositoryImp implements GetServiceCategoryRepository{
+class GetServiceCategoryRepositoryImp implements GetServiceCategoryRepository {
   final GetServiceCategoryDataSource _getServiceCategoryDataSource;
   GetServiceCategoryRepositoryImp(this._getServiceCategoryDataSource);
 
@@ -11,5 +11,4 @@ class GetServiceCategoryRepositoryImp implements GetServiceCategoryRepository{
   Future<Either<Exception, List<ServiceCategoryEntity>>> call() async {
     return await _getServiceCategoryDataSource();
   }
-
 }
