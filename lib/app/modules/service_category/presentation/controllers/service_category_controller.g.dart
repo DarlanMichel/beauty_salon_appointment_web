@@ -26,6 +26,36 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
     });
   }
 
+  final _$nameAtom = Atom(name: '_ServiceCategoryControllerBase.name');
+
+  @override
+  String? get name {
+    _$nameAtom.reportRead();
+    return super.name;
+  }
+
+  @override
+  set name(String? value) {
+    _$nameAtom.reportWrite(value, super.name, () {
+      super.name = value;
+    });
+  }
+
+  final _$pictureAtom = Atom(name: '_ServiceCategoryControllerBase.picture');
+
+  @override
+  String? get picture {
+    _$pictureAtom.reportRead();
+    return super.picture;
+  }
+
+  @override
+  set picture(String? value) {
+    _$pictureAtom.reportWrite(value, super.picture, () {
+      super.picture = value;
+    });
+  }
+
   final _$getServiceCategoryAsyncAction =
       AsyncAction('_ServiceCategoryControllerBase.getServiceCategory');
 
@@ -35,10 +65,37 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
         .run(() => super.getServiceCategory());
   }
 
+  final _$_ServiceCategoryControllerBaseActionController =
+      ActionController(name: '_ServiceCategoryControllerBase');
+
+  @override
+  void setName(String _name) {
+    final _$actionInfo = _$_ServiceCategoryControllerBaseActionController
+        .startAction(name: '_ServiceCategoryControllerBase.setName');
+    try {
+      return super.setName(_name);
+    } finally {
+      _$_ServiceCategoryControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPicture(String? _picture) {
+    final _$actionInfo = _$_ServiceCategoryControllerBaseActionController
+        .startAction(name: '_ServiceCategoryControllerBase.setPicture');
+    try {
+      return super.setPicture(_picture);
+    } finally {
+      _$_ServiceCategoryControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-listServiceCategoryEntity: ${listServiceCategoryEntity}
+listServiceCategoryEntity: ${listServiceCategoryEntity},
+name: ${name},
+picture: ${picture}
     ''';
   }
 }

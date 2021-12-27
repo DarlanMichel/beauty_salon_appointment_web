@@ -3,5 +3,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class SaveServiceCategoryRepository {
   Future<Either<Exception, ServiceCategoryEntity>> call(
-      ServiceCategoryEntity serviceCategoryEntity);
+      {required String name, required String picture});
 }

@@ -9,7 +9,7 @@ class SaveServiceCategoryUseCaseImp implements SaveServiceCategoryUseCase {
 
   @override
   Future<Either<Exception, ServiceCategoryEntity>> call(
-      ServiceCategoryEntity serviceCategoryEntity) async {
-    return await _saveServiceCategoryRepository(serviceCategoryEntity);
+      {required String name, required String picture}) async {
+    return await _saveServiceCategoryRepository(name: name, picture: picture);
   }
 }

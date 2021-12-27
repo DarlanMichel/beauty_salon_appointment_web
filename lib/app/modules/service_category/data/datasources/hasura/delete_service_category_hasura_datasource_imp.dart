@@ -12,14 +12,16 @@ class DeleteServiceCategoryHasuraDataSourceImp
     try {
       int affectedRow = 0;
       var query = '''
-        mutation deleteServiceCategory{
-          delete_service_category(where: {id: {_eq: $id}}) {
+        mutation deleteServiceCategory(\$id: Int){
+          delete_service_category(where: {id: {_eq: \$id}}) {
             affected_rows
           }
         } ''';
-      var snapshot = await _hasuraConnect.mutation(query);
+      var snapshot =
+          await _hasuraConnect.mutation(query, variables: {"id": id});
 
-      affectedRow = snapshot['data']['delete_service_category']['affected_rows'];
+      affectedRow =
+          snapshot['data']['delete_service_category']['affected_rows'];
 
       return Right(affectedRow);
     } catch (e) {

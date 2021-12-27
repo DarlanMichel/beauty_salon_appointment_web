@@ -40,7 +40,9 @@ dependencies:
   dartz: ^0.10.1
   hasura_connect: ^4.0.0+2
   modular_test: ^1.0.1+1
-  file_picker: ^4.3.0
+  # file_picker: ^4.3.0
+  cloudinary_public: ^0.11.0
+  image_picker: ^0.8.4+4
 
 dev_dependencies:
   flutter_test:

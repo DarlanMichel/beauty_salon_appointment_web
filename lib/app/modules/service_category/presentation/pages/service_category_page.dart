@@ -92,7 +92,10 @@ class _ServiceCategoryPageState
                                     Row(
                                       children: [
                                         ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Modular.to.navigate('./new',
+                                                arguments: category);
+                                          },
                                           child: const Text(
                                             'Editar',
                                             textScaleFactor: 1.2,

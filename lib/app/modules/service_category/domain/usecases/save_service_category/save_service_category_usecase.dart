@@ -3,5 +3,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class SaveServiceCategoryUseCase {
   Future<Either<Exception, ServiceCategoryEntity>> call(
-      ServiceCategoryEntity serviceCategoryEntity);
+      {required String name, required String picture});
 }
