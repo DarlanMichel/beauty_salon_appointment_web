@@ -13,14 +13,13 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/domain
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/pages/service_category_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/pages/service_category_registration_page.dart';
+import 'package:beauty_salon_appointment_web/app/shared/hasura_connect.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:hasura_connect/hasura_connect.dart';
 
 class ServiceCategoryModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.lazySingleton((i) => HasuraConnect(
-        "https://beauty-salon-appointment.herokuapp.com/v1/graphql")),
+    Bind.lazySingleton((i) => CustomHasuraConnect.getConnect()),
     //datasource
     Bind.lazySingleton((i) => GetServiceCategoryHasuraDataSourceImp(i())),
     Bind.lazySingleton((i) => SaveServiceCategoryHasuraDataSourceImp(i())),

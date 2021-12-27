@@ -56,6 +56,22 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
     });
   }
 
+  final _$isLoadingAtom =
+      Atom(name: '_ServiceCategoryControllerBase.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   final _$getServiceCategoryAsyncAction =
       AsyncAction('_ServiceCategoryControllerBase.getServiceCategory');
 
@@ -91,11 +107,23 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
   }
 
   @override
+  void setLoading(bool _isLoading) {
+    final _$actionInfo = _$_ServiceCategoryControllerBaseActionController
+        .startAction(name: '_ServiceCategoryControllerBase.setLoading');
+    try {
+      return super.setLoading(_isLoading);
+    } finally {
+      _$_ServiceCategoryControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 listServiceCategoryEntity: ${listServiceCategoryEntity},
 name: ${name},
-picture: ${picture}
+picture: ${picture},
+isLoading: ${isLoading}
     ''';
   }
 }

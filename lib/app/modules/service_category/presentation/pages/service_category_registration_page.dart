@@ -1,7 +1,9 @@
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
+import 'package:beauty_salon_appointment_web/app/shared/cloudinary_public.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -119,112 +121,120 @@ class _ServiceCategoryRegistrationPageState extends ModularState<
             ],
           ),
           Expanded(child: Container()),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    final cloudinary =
-                        CloudinaryPublic('dx1tx3aso', 'iyrrvxvs', cache: false);
-                    if (widget.entity == null) {
-                      try {
-                        CloudinaryResponse response = await cloudinary
-                            .uploadFile(CloudinaryFile.fromFile(image!.path,
-                                resourceType: CloudinaryResourceType.Image));
-                        controller.setPicture(response.secureUrl);
-                        var entity = await controller.saveServiceCategory(
-                            name: controller.name!,
-                            picture: controller.picture!);
-                        if (entity.id != null) {
-                          Modular.to.navigate('/serviceCategory/');
-                        }
-                      } on CloudinaryException catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: Text(e.message!),
-                                ));
-                      } catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (_) => const AlertDialog(
-                                  title: Text('Erro ao inserir a categoria!'),
-                                ));
-                      }
-                    } else {
-                      try {
-                        if (imageMemory != null) {
+          Observer(builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      controller.setLoading(true);
+                      final cloudinary = CustomCloudinary.getCloudinary();
+                      if (widget.entity == null) {
+                        try {
                           CloudinaryResponse response = await cloudinary
                               .uploadFile(CloudinaryFile.fromFile(image!.path,
                                   resourceType: CloudinaryResourceType.Image));
                           controller.setPicture(response.secureUrl);
+                          var entity = await controller.saveServiceCategory(
+                              name: controller.name!,
+                              picture: controller.picture!);
+                          if (entity.id != null) {
+                            Modular.to.navigate('/serviceCategory/');
+                          }
+                        } on CloudinaryException catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: Text(e.message!),
+                                  ));
+                        } catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => const AlertDialog(
+                                    title: Text('Erro ao inserir a categoria!'),
+                                  ));
                         }
+                      } else {
+                        try {
+                          if (imageMemory != null) {
+                            CloudinaryResponse response = await cloudinary
+                                .uploadFile(CloudinaryFile.fromFile(image!.path,
+                                    resourceType:
+                                        CloudinaryResourceType.Image));
+                            controller.setPicture(response.secureUrl);
+                          }
 
-                        ServiceCategoryEntity _serviceCategory =
-                            ServiceCategoryEntity(
-                                id: widget.entity!.id,
-                                name: controller.name!,
-                                picture: controller.picture!);
+                          ServiceCategoryEntity _serviceCategory =
+                              ServiceCategoryEntity(
+                                  id: widget.entity!.id,
+                                  name: controller.name!,
+                                  picture: controller.picture!);
 
-                        var updatedEntity = await controller
-                            .updateServiceCategory(_serviceCategory);
-                        if (updatedEntity.id != null) {
-                          Modular.to.navigate('/serviceCategory/');
+                          var updatedEntity = await controller
+                              .updateServiceCategory(_serviceCategory);
+                          if (updatedEntity.id != null) {
+                            Modular.to.navigate('/serviceCategory/');
+                          }
+                        } on CloudinaryException catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: Text(e.message!),
+                                  ));
+                        } catch (e) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => const AlertDialog(
+                                    title: Text('Erro ao editar a categoria!'),
+                                  ));
                         }
-                      } on CloudinaryException catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: Text(e.message!),
-                                ));
-                      } catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (_) => const AlertDialog(
-                                  title: Text('Erro ao editar a categoria!'),
-                                ));
                       }
-                    }
-                  },
-                  child: const Text(
-                    'Salvar',
-                    textScaleFactor: 1.2,
-                    style: TextStyle(
-                        color: Color.fromRGBO(97, 97, 97, 1),
-                        fontWeight: FontWeight.bold),
+                      controller.setLoading(false);
+                    },
+                    child: controller.isLoading
+                        ? const CircularProgressIndicator(
+                            color: Color.fromRGBO(97, 97, 97, 1),
+                          )
+                        : const Text(
+                            'Salvar',
+                            textScaleFactor: 1.2,
+                            style: TextStyle(
+                                color: Color.fromRGBO(97, 97, 97, 1),
+                                fontWeight: FontWeight.bold),
+                          ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.secondary,
+                      fixedSize: const Size(110, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.secondary,
-                    fixedSize: const Size(110, 40),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
+                  const SizedBox(
+                    width: 27,
                   ),
-                ),
-                const SizedBox(
-                  width: 27,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Modular.to.navigate('/serviceCategory/');
-                  },
-                  child: const Text(
-                    'Cancelar',
-                    textScaleFactor: 1.2,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.primary,
-                    fixedSize: const Size(110, 40),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                  ),
-                )
-              ],
-            ),
-          )
+                  ElevatedButton(
+                    onPressed: () {
+                      Modular.to.navigate('/serviceCategory/');
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      textScaleFactor: 1.2,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.primary,
+                      fixedSize: const Size(110, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                  )
+                ],
+              ),
+            );
+          })
         ],
       ),
     );

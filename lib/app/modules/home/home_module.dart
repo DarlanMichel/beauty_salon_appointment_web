@@ -1,6 +1,6 @@
 import 'package:beauty_salon_appointment_web/app/modules/home/presentation/ui/pages/home_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/home/presentation/ui/widgets/content_home_page.dart';
-import 'package:beauty_salon_appointment_web/app/modules/service_category/serviceCategory_module.dart';
+import 'package:beauty_salon_appointment_web/app/modules/service_category/service_category_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class HomeModule extends Module {

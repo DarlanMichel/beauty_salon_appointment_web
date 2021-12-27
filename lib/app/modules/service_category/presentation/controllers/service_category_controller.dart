@@ -33,6 +33,9 @@ abstract class _ServiceCategoryControllerBase with Store {
   @observable
   String? picture;
 
+  @observable
+  bool isLoading = false;
+
   @action
   getServiceCategory() async {
     var result = await _getServiceCategoryUsecase();
@@ -45,6 +48,9 @@ abstract class _ServiceCategoryControllerBase with Store {
 
   @action
   void setPicture(String? _picture) => picture = _picture;
+
+  @action
+  void setLoading(bool _isLoading) => isLoading = _isLoading;
 
   Future<ServiceCategoryEntity> updateServiceCategory(
       ServiceCategoryEntity entity) async {
