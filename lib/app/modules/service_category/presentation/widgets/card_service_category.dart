@@ -38,7 +38,7 @@ class CardServiceCategory extends StatelessWidget {
               children: [
                 Text(
                   'Categoria: ${category.name}',
-                  textScaleFactor: 2,
+                  textScaleFactor: 1.6,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(

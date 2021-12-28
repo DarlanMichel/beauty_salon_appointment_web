@@ -1,25 +1,18 @@
-import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
-import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
-import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/widgets/card_service_category.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/domain/entities/service_entity.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/controllers/service_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/widgets/card_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class ServiceCategoryPage extends StatefulWidget {
-  const ServiceCategoryPage({Key? key}) : super(key: key);
+class ServicePage extends StatefulWidget {
+  const ServicePage({Key? key}) : super(key: key);
 
   @override
-  _ServiceCategoryPageState createState() => _ServiceCategoryPageState();
+  _ServicesPageState createState() => _ServicesPageState();
 }
 
-class _ServiceCategoryPageState
-    extends ModularState<ServiceCategoryPage, ServiceCategoryController> {
-  @override
-  void initState() {
-    super.initState();
-    controller.getServiceCategory();
-  }
-
+class _ServicesPageState extends ModularState<ServicePage, ServiceController> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -29,7 +22,7 @@ class _ServiceCategoryPageState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Categorias de Serviços',
+              'Serviços Prestados',
               textScaleFactor: 3.5,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -37,26 +30,25 @@ class _ServiceCategoryPageState
               height: 20,
             ),
             const Text(
-              'Faça o cadastro das categorias de serviços prestados pelo salão, para que seja apresentado na tela inicial do aplicativo',
+              'Faça o cadastro dos serviços prestados pelos colaboradores, para que o cliente selecione o serviço que deseja',
               textScaleFactor: 1.3,
             ),
             const SizedBox(
               height: 50,
             ),
             Observer(builder: (context) {
-              if (controller.listServiceCategoryEntity == null) {
+              if (controller.listServiceEntity == null) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else {
-                List<ServiceCategoryEntity> listCategory =
-                    controller.listServiceCategoryEntity!;
-                if (listCategory.isEmpty) {
+                List<ServiceEntity> listService = controller.listServiceEntity!;
+                if (listService.isEmpty) {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: const Center(
                       child: Text(
-                        'Sem categorias cadastradas!',
+                        'Sem serviços cadastrados!',
                         textScaleFactor: 2.5,
                         textAlign: TextAlign.center,
                       ),
@@ -66,13 +58,13 @@ class _ServiceCategoryPageState
                   return LayoutBuilder(builder: (context, constraints) {
                     if (constraints.maxWidth < 900) {
                       return ListView.builder(
-                          itemCount: listCategory.length,
+                          itemCount: listService.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, i) {
-                            ServiceCategoryEntity category = listCategory[i];
-                            return CardServiceCategory(
-                              category: category,
+                            ServiceEntity service = listService[i];
+                            return CardService(
+                              service: service,
                             );
                           });
                     } else {
@@ -84,11 +76,11 @@ class _ServiceCategoryPageState
                                   mainAxisExtent: 160),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: listCategory.length,
+                          itemCount: listService.length,
                           itemBuilder: (context, i) {
-                            ServiceCategoryEntity category = listCategory[i];
-                            return CardServiceCategory(
-                              category: category,
+                            ServiceEntity service = listService[i];
+                            return CardService(
+                              service: service,
                             );
                           });
                     }
@@ -105,7 +97,7 @@ class _ServiceCategoryPageState
                     Modular.to.navigate('./new');
                   },
                   child: const Text(
-                    'Nova Categoria',
+                    'Novo Serviço',
                     textScaleFactor: 1.2,
                     style: TextStyle(
                         color: Color.fromRGBO(97, 97, 97, 1),

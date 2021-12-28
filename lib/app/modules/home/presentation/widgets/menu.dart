@@ -127,7 +127,7 @@ class MenuWidget extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: Modular.to.path.contains('/services/')
+                color: Modular.to.path.contains('/service/')
                     ? Colors.white
                     : Theme.of(context).colorScheme.primary,
               ),
@@ -142,9 +142,11 @@ class MenuWidget extends StatelessWidget {
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                selected: Modular.to.path.contains('/services/'),
+                selected: Modular.to.path.contains('/service/'),
                 selectedColor: Colors.black,
-                onTap: () {},
+                onTap: () {
+                  Modular.to.navigate('/service/');
+                },
               ),
             ),
             Container(
