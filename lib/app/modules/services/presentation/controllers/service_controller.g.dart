@@ -25,6 +25,22 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
     });
   }
 
+  final _$listCategoryEntityAtom =
+      Atom(name: '_ServiceControllerBase.listCategoryEntity');
+
+  @override
+  List<ServiceCategoryEntity> get listCategoryEntity {
+    _$listCategoryEntityAtom.reportRead();
+    return super.listCategoryEntity;
+  }
+
+  @override
+  set listCategoryEntity(List<ServiceCategoryEntity> value) {
+    _$listCategoryEntityAtom.reportWrite(value, super.listCategoryEntity, () {
+      super.listCategoryEntity = value;
+    });
+  }
+
   final _$nameAtom = Atom(name: '_ServiceControllerBase.name');
 
   @override
@@ -43,15 +59,30 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
   final _$categoryAtom = Atom(name: '_ServiceControllerBase.category');
 
   @override
-  int? get category {
+  ServiceCategoryEntity? get category {
     _$categoryAtom.reportRead();
     return super.category;
   }
 
   @override
-  set category(int? value) {
+  set category(ServiceCategoryEntity? value) {
     _$categoryAtom.reportWrite(value, super.category, () {
       super.category = value;
+    });
+  }
+
+  final _$packageAtom = Atom(name: '_ServiceControllerBase.package');
+
+  @override
+  bool get package {
+    _$packageAtom.reportRead();
+    return super.package;
+  }
+
+  @override
+  set package(bool value) {
+    _$packageAtom.reportWrite(value, super.package, () {
+      super.package = value;
     });
   }
 
@@ -70,12 +101,41 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
     });
   }
 
+  final _$haveWaitingAtom = Atom(name: '_ServiceControllerBase.haveWaiting');
+
+  @override
+  bool get haveWaiting {
+    _$haveWaitingAtom.reportRead();
+    return super.haveWaiting;
+  }
+
+  @override
+  set haveWaiting(bool value) {
+    _$haveWaitingAtom.reportWrite(value, super.haveWaiting, () {
+      super.haveWaiting = value;
+    });
+  }
+
+  @override
+  ObservableFuture<String?> convertCategory(int category) {
+    final _$future = super.convertCategory(category);
+    return ObservableFuture<String?>(_$future);
+  }
+
   final _$getServiceAsyncAction =
       AsyncAction('_ServiceControllerBase.getService');
 
   @override
   Future getService() {
     return _$getServiceAsyncAction.run(() => super.getService());
+  }
+
+  final _$getCategoryAsyncAction =
+      AsyncAction('_ServiceControllerBase.getCategory');
+
+  @override
+  Future getCategory() {
+    return _$getCategoryAsyncAction.run(() => super.getCategory());
   }
 
   final _$_ServiceControllerBaseActionController =
@@ -93,6 +153,17 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
   }
 
   @override
+  void setCategory(ServiceCategoryEntity _category) {
+    final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
+        name: '_ServiceControllerBase.setCategory');
+    try {
+      return super.setCategory(_category);
+    } finally {
+      _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setLoading(bool _isLoading) {
     final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
         name: '_ServiceControllerBase.setLoading');
@@ -104,12 +175,37 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
   }
 
   @override
+  void setPackage(bool _package) {
+    final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
+        name: '_ServiceControllerBase.setPackage');
+    try {
+      return super.setPackage(_package);
+    } finally {
+      _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setHaveWaiting(bool _haveWaiting) {
+    final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
+        name: '_ServiceControllerBase.setHaveWaiting');
+    try {
+      return super.setHaveWaiting(_haveWaiting);
+    } finally {
+      _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 listServiceEntity: ${listServiceEntity},
+listCategoryEntity: ${listCategoryEntity},
 name: ${name},
 category: ${category},
-isLoading: ${isLoading}
+package: ${package},
+isLoading: ${isLoading},
+haveWaiting: ${haveWaiting}
     ''';
   }
 }

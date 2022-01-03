@@ -21,22 +21,22 @@ class ServiceCategoryModule extends Module {
   final List<Bind> binds = [
     Bind.lazySingleton((i) => CustomHasuraConnect.getConnect()),
     //datasource
-    Bind.lazySingleton((i) => GetServiceCategoryHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => SaveServiceCategoryHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => EditServiceCategoryHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceCategoryHasuraDataSourceImp(i())),
+    Bind.lazySingleton((i) => GetServiceCategoryHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceCategoryHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceCategoryHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceCategoryHasuraDataSourceImp(i()), export: true),
     //repositories
-    Bind.lazySingleton((i) => GetServiceCategoryRepositoryImp(i())),
-    Bind.lazySingleton((i) => SaveServiceCategoryRepositoryImp(i())),
-    Bind.lazySingleton((i) => EditServiceCategoryRepositoryImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceCategoryRepositoryImp(i())),
+    Bind.lazySingleton((i) => GetServiceCategoryRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceCategoryRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceCategoryRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceCategoryRepositoryImp(i()), export: true),
     //useCases
-    Bind.lazySingleton((i) => GetServiceCategoryUseCaseImp(i())),
-    Bind.lazySingleton((i) => SaveServiceCategoryUseCaseImp(i())),
-    Bind.lazySingleton((i) => EditServiceCategoryUseCaseImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceCategoryUseCaseImp(i())),
+    Bind.lazySingleton((i) => GetServiceCategoryUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceCategoryUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceCategoryUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceCategoryUseCaseImp(i()), export: true),
     //controllers
-    Bind.lazySingleton((i) => ServiceCategoryController(i(), i(), i(), i())),
+    Bind.lazySingleton((i) => ServiceCategoryController(i(), i(), i(), i()), export: true),
   ];
 
   @override

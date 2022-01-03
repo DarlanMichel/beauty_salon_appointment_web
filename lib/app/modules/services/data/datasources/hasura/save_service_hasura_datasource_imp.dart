@@ -30,7 +30,6 @@ class SaveServiceHasuraDataSourceImp implements SaveServiceDataSource {
       var snapshot = await _hasuraConnect.mutation(query, variables: {
         "name": serviceEntity.name,
         "category": serviceEntity.category,
-        "extra_services": serviceEntity.extraServices,
         "have_waiting": serviceEntity.haveWaiting,
         "package": serviceEntity.package,
         "post_wait_time": serviceEntity.postWaitTime,

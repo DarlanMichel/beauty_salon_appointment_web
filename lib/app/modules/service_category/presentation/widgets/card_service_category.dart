@@ -37,8 +37,10 @@ class CardServiceCategory extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Categoria: ${category.name}',
-                  textScaleFactor: 1.6,
+                  '${category.name}',
+                  maxLines: 1,
+                  textScaleFactor: 2,
+                  overflow: TextOverflow.fade,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(

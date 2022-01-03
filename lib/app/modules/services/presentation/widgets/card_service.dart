@@ -1,17 +1,16 @@
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/entities/service_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/presentation/controllers/service_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class CardService extends StatelessWidget {
   final ServiceEntity service;
-  const CardService({Key? key, required this.service})
-      : super(key: key);
+  const CardService({Key? key, required this.service}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ServiceController controller =
-    Modular.get<ServiceController>();
+    final ServiceController controller = Modular.get<ServiceController>();
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
@@ -28,16 +27,23 @@ class CardService extends StatelessWidget {
                 Text(
                   'Serviço: ${service.name}',
                   textScaleFactor: 1.7,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  'Categoria: ${service.category}',
-                  textScaleFactor: 1.2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold
-                  ),
+                Observer(
+                  builder: (context) {
+                    return FutureBuilder(
+                      future: controller.convertCategory(service.category),
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.hasData
+                          ? 'Categoria: ${snapshot.data}'
+                          : 'Carregando...',
+                          textScaleFactor: 1.2,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        );
+                      }
+                    );
+                  }
                 )
               ],
             ),
@@ -45,18 +51,14 @@ class CardService extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                    'Média de tempo: ${controller.convertTime(service.serviceTime)}',
+                  'Média de tempo: ${controller.convertTime(service.serviceTime)}',
                   textScaleFactor: 1.2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                    'Pacote: ${service.package ? 'Sim' : 'Não'}',
+                  'Pacote: ${service.package ? 'Sim' : 'Não'}',
                   textScaleFactor: 1.2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -89,15 +91,14 @@ class CardService extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    int deleted = await controller
-                        .deleteService(service.id!);
+                    int deleted = await controller.deleteService(service.id!);
                     if (deleted == 1) {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: Text(
-                                'Serviço ${service.name} removido com sucesso!'),
-                          ));
+                                title: Text(
+                                    'Serviço ${service.name} removido com sucesso!'),
+                              ));
                       await controller.getService();
                     }
                   },
