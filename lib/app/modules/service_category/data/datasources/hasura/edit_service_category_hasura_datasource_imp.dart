@@ -2,8 +2,11 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/data/d
 import 'package:beauty_salon_appointment_web/app/modules/service_category/data/dtos/service_category_dto.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hasura_connect/hasura_connect.dart';
+part 'edit_service_category_hasura_datasource_imp.g.dart';
 
+@Injectable(singleton: false)
 class EditServiceCategoryHasuraDataSourceImp
     implements EditServiceCategoryDataSource {
   final HasuraConnect _hasuraConnect;

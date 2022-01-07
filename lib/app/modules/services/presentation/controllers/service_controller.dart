@@ -28,10 +28,13 @@ abstract class _ServiceControllerBase with Store {
   List<ServiceEntity>? listServiceEntity;
 
   @observable
-  List<ServiceCategoryEntity> listCategoryEntity = [];
+  List<ServiceCategoryEntity>? listCategoryEntity;
 
   @observable
   String? name;
+
+  @observable
+  String nameCategory = '';
 
   @observable
   ServiceCategoryEntity? category;
@@ -56,7 +59,7 @@ abstract class _ServiceControllerBase with Store {
   getCategory() async {
     final categoryController = Modular.get<ServiceCategoryController>();
     await categoryController.getServiceCategory();
-    listCategoryEntity.addAll(categoryController.listServiceCategoryEntity!);
+    listCategoryEntity = categoryController.listServiceCategoryEntity;
   }
 
   @action
@@ -104,10 +107,9 @@ abstract class _ServiceControllerBase with Store {
     }
   }
 
-  @observable
-  Future<String?> convertCategory(int category) async {
-    String? nameCategory;
-    for (var item in listCategoryEntity) {
+  @action
+  String setNameCategory(int category) {
+    for (var item in listCategoryEntity!) {
       if (item.id == category) {
         nameCategory = item.name;
       }

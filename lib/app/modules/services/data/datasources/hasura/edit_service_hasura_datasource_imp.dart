@@ -31,7 +31,6 @@ class EditServiceHasuraDataSourceImp implements EditServiceDataSource {
         "id": serviceEntity.id,
         "name": serviceEntity.name,
         "category": serviceEntity.category,
-        "extra_services": serviceEntity.extraServices,
         "have_waiting": serviceEntity.haveWaiting,
         "package": serviceEntity.package,
         "post_wait_time": serviceEntity.postWaitTime,

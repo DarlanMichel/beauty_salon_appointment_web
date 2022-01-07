@@ -1,9 +1,11 @@
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/widgets/card_service_category.dart';
+import 'package:beauty_salon_appointment_web/app/shared/custom_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
 
 class ServiceCategoryPage extends StatefulWidget {
   const ServiceCategoryPage({Key? key}) : super(key: key);
@@ -14,10 +16,31 @@ class ServiceCategoryPage extends StatefulWidget {
 
 class _ServiceCategoryPageState
     extends ModularState<ServiceCategoryPage, ServiceCategoryController> {
+  final overlayLoading = OverlayEntry(builder: (_) {
+    return const CustomOverlay();
+  });
+
   @override
   void initState() {
     super.initState();
-    controller.getServiceCategory();
+    reaction((_) => controller.error, (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    });
+
+    reaction<bool>((_) => controller.loading, (isLoading) {
+      if (isLoading) {
+        Overlay.of(context)?.insert(overlayLoading);
+      } else {
+        overlayLoading.remove();
+      }
+    });
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      controller.getServiceCategory();
+    });
   }
 
   @override
@@ -44,56 +67,43 @@ class _ServiceCategoryPageState
               height: 50,
             ),
             Observer(builder: (context) {
-              if (controller.listServiceCategoryEntity == null) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+              if (controller.listServiceCategoryEntity.isEmpty) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
                 );
               } else {
                 List<ServiceCategoryEntity> listCategory =
-                    controller.listServiceCategoryEntity!;
-                if (listCategory.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    child: const Center(
-                      child: Text(
-                        'Sem categorias cadastradas!',
-                        textScaleFactor: 2.5,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                } else {
-                  return LayoutBuilder(builder: (context, constraints) {
-                    if (constraints.maxWidth < 900) {
-                      return ListView.builder(
-                          itemCount: listCategory.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, i) {
-                            ServiceCategoryEntity category = listCategory[i];
-                            return CardServiceCategory(
-                              category: category,
-                            );
-                          });
-                    } else {
-                      return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 15,
-                                  crossAxisCount: 2,
-                                  mainAxisExtent: 160),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: listCategory.length,
-                          itemBuilder: (context, i) {
-                            ServiceCategoryEntity category = listCategory[i];
-                            return CardServiceCategory(
-                              category: category,
-                            );
-                          });
-                    }
-                  });
-                }
+                    controller.listServiceCategoryEntity;
+                return LayoutBuilder(builder: (context, constraints) {
+                  if (constraints.maxWidth < 900) {
+                    return ListView.builder(
+                        itemCount: listCategory.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, i) {
+                          ServiceCategoryEntity category = listCategory[i];
+                          return CardServiceCategory(
+                            category: category,
+                          );
+                        });
+                  } else {
+                    return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 15,
+                                crossAxisCount: 2,
+                                mainAxisExtent: 160),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: listCategory.length,
+                        itemBuilder: (context, i) {
+                          ServiceCategoryEntity category = listCategory[i];
+                          return CardServiceCategory(
+                            category: category,
+                          );
+                        });
+                  }
+                });
               }
             }),
             Padding(

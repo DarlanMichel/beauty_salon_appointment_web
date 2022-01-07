@@ -29,13 +29,13 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
       Atom(name: '_ServiceControllerBase.listCategoryEntity');
 
   @override
-  List<ServiceCategoryEntity> get listCategoryEntity {
+  List<ServiceCategoryEntity>? get listCategoryEntity {
     _$listCategoryEntityAtom.reportRead();
     return super.listCategoryEntity;
   }
 
   @override
-  set listCategoryEntity(List<ServiceCategoryEntity> value) {
+  set listCategoryEntity(List<ServiceCategoryEntity>? value) {
     _$listCategoryEntityAtom.reportWrite(value, super.listCategoryEntity, () {
       super.listCategoryEntity = value;
     });
@@ -53,6 +53,21 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
   set name(String? value) {
     _$nameAtom.reportWrite(value, super.name, () {
       super.name = value;
+    });
+  }
+
+  final _$nameCategoryAtom = Atom(name: '_ServiceControllerBase.nameCategory');
+
+  @override
+  String get nameCategory {
+    _$nameCategoryAtom.reportRead();
+    return super.nameCategory;
+  }
+
+  @override
+  set nameCategory(String value) {
+    _$nameCategoryAtom.reportWrite(value, super.nameCategory, () {
+      super.nameCategory = value;
     });
   }
 
@@ -114,12 +129,6 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
     _$haveWaitingAtom.reportWrite(value, super.haveWaiting, () {
       super.haveWaiting = value;
     });
-  }
-
-  @override
-  ObservableFuture<String?> convertCategory(int category) {
-    final _$future = super.convertCategory(category);
-    return ObservableFuture<String?>(_$future);
   }
 
   final _$getServiceAsyncAction =
@@ -197,11 +206,23 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
   }
 
   @override
+  String setNameCategory(int category) {
+    final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
+        name: '_ServiceControllerBase.setNameCategory');
+    try {
+      return super.setNameCategory(category);
+    } finally {
+      _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 listServiceEntity: ${listServiceEntity},
 listCategoryEntity: ${listCategoryEntity},
 name: ${name},
+nameCategory: ${nameCategory},
 category: ${category},
 package: ${package},
 isLoading: ${isLoading},

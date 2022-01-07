@@ -3,6 +3,20 @@
 part of 'service_category_controller.dart';
 
 // **************************************************************************
+// InjectionGenerator
+// **************************************************************************
+
+final $ServiceCategoryController = BindInject(
+  (i) => ServiceCategoryController(
+      i<GetServiceCategoryUseCase>(),
+      i<DeleteServiceCategoryUseCase>(),
+      i<SaveServiceCategoryUseCase>(),
+      i<EditServiceCategoryUseCase>()),
+  isSingleton: true,
+  isLazy: true,
+);
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 
@@ -13,16 +27,46 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
       Atom(name: '_ServiceCategoryControllerBase.listServiceCategoryEntity');
 
   @override
-  List<ServiceCategoryEntity>? get listServiceCategoryEntity {
+  List<ServiceCategoryEntity> get listServiceCategoryEntity {
     _$listServiceCategoryEntityAtom.reportRead();
     return super.listServiceCategoryEntity;
   }
 
   @override
-  set listServiceCategoryEntity(List<ServiceCategoryEntity>? value) {
+  set listServiceCategoryEntity(List<ServiceCategoryEntity> value) {
     _$listServiceCategoryEntityAtom
         .reportWrite(value, super.listServiceCategoryEntity, () {
       super.listServiceCategoryEntity = value;
+    });
+  }
+
+  final _$errorAtom = Atom(name: '_ServiceCategoryControllerBase.error');
+
+  @override
+  Exception? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(Exception? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
+  final _$loadingAtom = Atom(name: '_ServiceCategoryControllerBase.loading');
+
+  @override
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
+  }
+
+  @override
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
     });
   }
 
@@ -56,29 +100,42 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
     });
   }
 
-  final _$isLoadingAtom =
-      Atom(name: '_ServiceCategoryControllerBase.isLoading');
-
-  @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
-  }
-
-  @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
-    });
-  }
-
   final _$getServiceCategoryAsyncAction =
       AsyncAction('_ServiceCategoryControllerBase.getServiceCategory');
 
   @override
-  Future getServiceCategory() {
+  Future<void> getServiceCategory() {
     return _$getServiceCategoryAsyncAction
         .run(() => super.getServiceCategory());
+  }
+
+  final _$updateServiceCategoryAsyncAction =
+      AsyncAction('_ServiceCategoryControllerBase.updateServiceCategory');
+
+  @override
+  Future<ServiceCategoryEntity> updateServiceCategory(
+      ServiceCategoryEntity entity) {
+    return _$updateServiceCategoryAsyncAction
+        .run(() => super.updateServiceCategory(entity));
+  }
+
+  final _$saveServiceCategoryAsyncAction =
+      AsyncAction('_ServiceCategoryControllerBase.saveServiceCategory');
+
+  @override
+  Future<ServiceCategoryEntity> saveServiceCategory(
+      {required String name, required String picture}) {
+    return _$saveServiceCategoryAsyncAction
+        .run(() => super.saveServiceCategory(name: name, picture: picture));
+  }
+
+  final _$deleteServiceCategoryAsyncAction =
+      AsyncAction('_ServiceCategoryControllerBase.deleteServiceCategory');
+
+  @override
+  Future<int> deleteServiceCategory(int id) {
+    return _$deleteServiceCategoryAsyncAction
+        .run(() => super.deleteServiceCategory(id));
   }
 
   final _$_ServiceCategoryControllerBaseActionController =
@@ -107,23 +164,13 @@ mixin _$ServiceCategoryController on _ServiceCategoryControllerBase, Store {
   }
 
   @override
-  void setLoading(bool _isLoading) {
-    final _$actionInfo = _$_ServiceCategoryControllerBaseActionController
-        .startAction(name: '_ServiceCategoryControllerBase.setLoading');
-    try {
-      return super.setLoading(_isLoading);
-    } finally {
-      _$_ServiceCategoryControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 listServiceCategoryEntity: ${listServiceCategoryEntity},
+error: ${error},
+loading: ${loading},
 name: ${name},
-picture: ${picture},
-isLoading: ${isLoading}
+picture: ${picture}
     ''';
   }
 }

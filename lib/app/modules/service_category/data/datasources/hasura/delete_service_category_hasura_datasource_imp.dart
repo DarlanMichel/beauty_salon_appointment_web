@@ -1,7 +1,10 @@
 import 'package:beauty_salon_appointment_web/app/modules/service_category/data/datasources/delete_service_category_datasource.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hasura_connect/hasura_connect.dart';
+part 'delete_service_category_hasura_datasource_imp.g.dart';
 
+@Injectable(singleton: false)
 class DeleteServiceCategoryHasuraDataSourceImp
     implements DeleteServiceCategoryDataSource {
   final HasuraConnect _hasuraConnect;

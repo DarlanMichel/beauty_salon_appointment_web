@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "32.0.0"
+    version: "31.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "2.8.0"
   args:
     dependency: transitive
     description:
@@ -23,7 +23,7 @@ packages:
     source: hosted
     version: "2.3.0"
   async:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: async
       url: "https://pub.dartlang.org"
@@ -42,7 +42,7 @@ packages:
       name: build
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "2.1.1"
   build_config:
     dependency: transitive
     description:
@@ -414,7 +414,14 @@ packages:
       name: mobx_codegen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5+2"
+    version: "2.0.4"
+  modular_codegen:
+    dependency: "direct dev"
+    description:
+      name: modular_codegen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.3"
   modular_core:
     dependency: transitive
     description:

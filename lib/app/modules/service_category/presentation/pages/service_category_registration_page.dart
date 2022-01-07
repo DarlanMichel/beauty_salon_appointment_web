@@ -1,11 +1,12 @@
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
 import 'package:beauty_salon_appointment_web/app/shared/cloudinary_public.dart';
+import 'package:beauty_salon_appointment_web/app/shared/custom_overlay.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobx/mobx.dart';
 
 class ServiceCategoryRegistrationPage extends StatefulWidget {
   final ServiceCategoryEntity? entity;
@@ -22,6 +23,9 @@ class _ServiceCategoryRegistrationPageState extends ModularState<
   static final formKey = GlobalKey<FormState>();
   PickedFile? image;
   var imageMemory;
+  final overlayLoading = OverlayEntry(builder: (_) {
+    return const CustomOverlay();
+  });
 
   @override
   void initState() {
@@ -30,6 +34,24 @@ class _ServiceCategoryRegistrationPageState extends ModularState<
       controller.setName(widget.entity!.name);
       controller.setPicture(widget.entity!.picture);
     }
+    reaction((_) => controller.error, (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    });
+
+    reaction<bool>((_) => controller.loading, (isLoading) {
+      if (isLoading) {
+        Overlay.of(context)?.insert(overlayLoading);
+      } else {
+        overlayLoading.remove();
+      }
+    });
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      controller.getServiceCategory();
+    });
   }
 
   @override
@@ -129,129 +151,124 @@ class _ServiceCategoryRegistrationPageState extends ModularState<
               ],
             ),
             Expanded(child: Container()),
-            Observer(builder: (context) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (formKey.currentState!.validate() &&
-                            (imageMemory != null ||
-                                widget.entity?.picture != null)) {
-                          controller.setLoading(true);
-                          final cloudinary = CustomCloudinary.getCloudinary();
-                          if (widget.entity == null) {
-                            try {
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate() &&
+                          (imageMemory != null ||
+                              widget.entity?.picture != null)) {
+                        final cloudinary = CustomCloudinary.getCloudinary();
+                        if (widget.entity == null) {
+                          try {
+                            CloudinaryResponse response = await cloudinary
+                                .uploadFile(CloudinaryFile.fromFile(image!.path,
+                                    resourceType:
+                                        CloudinaryResourceType.Image));
+                            controller.setPicture(response.secureUrl);
+                            var entity = await controller.saveServiceCategory(
+                                name: controller.name!,
+                                picture: controller.picture!);
+                            if (entity.id != null) {
+                              Modular.to.navigate('/serviceCategory/');
+                            }
+                          } on CloudinaryException catch (e) {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text(e.message!),
+                                    ));
+                          } catch (e) {
+                            showDialog(
+                                context: context,
+                                builder: (_) => const AlertDialog(
+                                      title:
+                                          Text('Erro ao inserir a categoria!'),
+                                    ));
+                          }
+                        } else {
+                          try {
+                            if (imageMemory != null) {
                               CloudinaryResponse response =
                                   await cloudinary.uploadFile(
                                       CloudinaryFile.fromFile(image!.path,
                                           resourceType:
                                               CloudinaryResourceType.Image));
                               controller.setPicture(response.secureUrl);
-                              var entity = await controller.saveServiceCategory(
-                                  name: controller.name!,
-                                  picture: controller.picture!);
-                              if (entity.id != null) {
-                                Modular.to.navigate('/serviceCategory/');
-                              }
-                            } on CloudinaryException catch (e) {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                        title: Text(e.message!),
-                                      ));
-                            } catch (e) {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => const AlertDialog(
-                                        title: Text(
-                                            'Erro ao inserir a categoria!'),
-                                      ));
                             }
-                          } else {
-                            try {
-                              if (imageMemory != null) {
-                                CloudinaryResponse response = await cloudinary
-                                    .uploadFile(CloudinaryFile.fromFile(
-                                        image!.path,
-                                        resourceType:
-                                            CloudinaryResourceType.Image));
-                                controller.setPicture(response.secureUrl);
-                              }
 
-                              ServiceCategoryEntity _serviceCategory =
-                                  ServiceCategoryEntity(
-                                      id: widget.entity!.id,
-                                      name: controller.name!,
-                                      picture: controller.picture!);
+                            ServiceCategoryEntity _serviceCategory =
+                                ServiceCategoryEntity(
+                                    id: widget.entity!.id,
+                                    name: controller.name!,
+                                    picture: controller.picture!);
 
-                              var updatedEntity = await controller
-                                  .updateServiceCategory(_serviceCategory);
-                              if (updatedEntity.id != null) {
-                                Modular.to.navigate('/serviceCategory/');
-                              }
-                            } on CloudinaryException catch (e) {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                        title: Text(e.message!),
-                                      ));
-                            } catch (e) {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => const AlertDialog(
-                                        title:
-                                            Text('Erro ao editar a categoria!'),
-                                      ));
+                            var updatedEntity = await controller
+                                .updateServiceCategory(_serviceCategory);
+                            if (updatedEntity.id != null) {
+                              Modular.to.navigate('/serviceCategory/');
                             }
+                          } on CloudinaryException catch (e) {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text(e.message!),
+                                    ));
+                          } catch (e) {
+                            showDialog(
+                                context: context,
+                                builder: (_) => const AlertDialog(
+                                      title:
+                                          Text('Erro ao editar a categoria!'),
+                                    ));
                           }
-                          controller.setLoading(false);
                         }
-                      },
-                      child: controller.isLoading
-                          ? const CircularProgressIndicator(
-                              color: Color.fromRGBO(97, 97, 97, 1),
-                            )
-                          : const Text(
-                              'Salvar',
-                              textScaleFactor: 1.2,
-                              style: TextStyle(
-                                  color: Color.fromRGBO(97, 97, 97, 1),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.secondary,
-                        fixedSize: const Size(110, 40),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
+                      }
+                    },
+                    child: controller.loading
+                        ? const CircularProgressIndicator(
+                            color: Color.fromRGBO(97, 97, 97, 1),
+                          )
+                        : const Text(
+                            'Salvar',
+                            textScaleFactor: 1.2,
+                            style: TextStyle(
+                                color: Color.fromRGBO(97, 97, 97, 1),
+                                fontWeight: FontWeight.bold),
+                          ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.secondary,
+                      fixedSize: const Size(110, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                    const SizedBox(
-                      width: 27,
+                  ),
+                  const SizedBox(
+                    width: 27,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Modular.to.navigate('/serviceCategory/');
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      textScaleFactor: 1.2,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Modular.to.navigate('/serviceCategory/');
-                      },
-                      child: const Text(
-                        'Cancelar',
-                        textScaleFactor: 1.2,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.primary,
-                        fixedSize: const Size(110, 40),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            })
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.primary,
+                      fixedSize: const Size(110, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),

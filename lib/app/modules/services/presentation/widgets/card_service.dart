@@ -1,16 +1,28 @@
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/entities/service_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/presentation/controllers/service_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class CardService extends StatelessWidget {
+class CardService extends StatefulWidget {
   final ServiceEntity service;
   const CardService({Key? key, required this.service}) : super(key: key);
 
   @override
+  State<CardService> createState() => _CardServiceState();
+}
+
+class _CardServiceState extends ModularState<CardService, ServiceController> {
+  String? nameCategory;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      nameCategory = controller.setNameCategory(widget.service.category);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final ServiceController controller = Modular.get<ServiceController>();
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
@@ -25,38 +37,28 @@ class CardService extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  'Serviço: ${service.name}',
+                  'Serviço: ${widget.service.name}',
                   textScaleFactor: 1.7,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Observer(
-                  builder: (context) {
-                    return FutureBuilder(
-                      future: controller.convertCategory(service.category),
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.hasData
-                          ? 'Categoria: ${snapshot.data}'
-                          : 'Carregando...',
-                          textScaleFactor: 1.2,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      }
-                    );
-                  }
-                )
+
+                  Text(
+                    'Categoria: $nameCategory',
+                    textScaleFactor: 1.2,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  'Média de tempo: ${controller.convertTime(service.serviceTime)}',
+                  'Média de tempo: ${controller.convertTime(widget.service.serviceTime)}',
                   textScaleFactor: 1.2,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Pacote: ${service.package ? 'Sim' : 'Não'}',
+                  'Pacote: ${widget.service.package ? 'Sim' : 'Não'}',
                   textScaleFactor: 1.2,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 )
@@ -70,7 +72,7 @@ class CardService extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Modular.to.navigate('./new', arguments: service);
+                    Modular.to.navigate('./new', arguments: widget.service);
                   },
                   child: const Text(
                     'Editar',
@@ -91,13 +93,14 @@ class CardService extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    int deleted = await controller.deleteService(service.id!);
+                    int deleted =
+                        await controller.deleteService(widget.service.id!);
                     if (deleted == 1) {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: Text(
-                                    'Serviço ${service.name} removido com sucesso!'),
+                                    'Serviço ${widget.service.name} removido com sucesso!'),
                               ));
                       await controller.getService();
                     }

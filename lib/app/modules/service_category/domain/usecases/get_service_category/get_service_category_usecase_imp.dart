@@ -2,7 +2,10 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/domain
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/repositories/get_service_category_repository.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/get_service_category/get_service_category_usecase.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+part 'get_service_category_usecase_imp.g.dart';
 
+@Injectable(singleton: false)
 class GetServiceCategoryUseCaseImp implements GetServiceCategoryUseCase {
   final GetServiceCategoryRepository _getServiceCategoryRepository;
   GetServiceCategoryUseCaseImp(this._getServiceCategoryRepository);
