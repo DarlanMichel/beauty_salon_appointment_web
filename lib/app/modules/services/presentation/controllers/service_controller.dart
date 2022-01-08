@@ -10,25 +10,26 @@ import 'package:mobx/mobx.dart';
 
 part 'service_controller.g.dart';
 
+@Injectable()
 class ServiceController = _ServiceControllerBase with _$ServiceController;
 
 abstract class _ServiceControllerBase with Store {
-  late final GetServiceUseCase _getServiceUsecase;
-  late final DeleteServiceUseCase _deleteServiceUseCase;
-  late final SaveServiceUseCase _saveServiceUseCase;
-  late final EditServiceUseCase _editServiceUseCase;
+  final GetServiceUseCase _getServiceUsecase;
+  final DeleteServiceUseCase _deleteServiceUseCase;
+  final SaveServiceUseCase _saveServiceUseCase;
+  final EditServiceUseCase _editServiceUseCase;
 
   _ServiceControllerBase(this._getServiceUsecase, this._deleteServiceUseCase,
-      this._saveServiceUseCase, this._editServiceUseCase) {
-    getService();
-    getCategory();
-  }
+      this._saveServiceUseCase, this._editServiceUseCase);
 
   @observable
-  List<ServiceEntity>? listServiceEntity;
+  List<ServiceEntity> listServiceEntity = [];
 
   @observable
-  List<ServiceCategoryEntity>? listCategoryEntity;
+  List<ServiceCategoryEntity> listCategoryEntity = [];
+
+  @observable
+  Exception? error;
 
   @observable
   String? name;
@@ -43,23 +44,37 @@ abstract class _ServiceControllerBase with Store {
   bool package = false;
 
   @observable
-  bool isLoading = false;
+  bool loading = false;
 
   @observable
   bool haveWaiting = false;
 
   @action
-  getService() async {
-    var result = await _getServiceUsecase();
-    result.fold((error) => print(error.toString()),
-        (success) => listServiceEntity = success);
+  Future<void> getService() async {
+    loading = true;
+    try {
+      var result = await _getServiceUsecase();
+      result.fold((_error) => error = _error,
+          (_success) => listServiceEntity = _success);
+    } catch (e) {
+      error = Exception('Erro ao pegar serviços');
+    } finally {
+      loading = false;
+    }
   }
 
   @action
-  getCategory() async {
-    final categoryController = Modular.get<ServiceCategoryController>();
-    await categoryController.getServiceCategory();
-    listCategoryEntity = categoryController.listServiceCategoryEntity;
+  Future<void> getCategory() async {
+    loading = true;
+    try {
+      final categoryController = Modular.get<ServiceCategoryController>();
+      await categoryController.getServiceCategory();
+      listCategoryEntity = categoryController.listServiceCategoryEntity;
+    } catch (e) {
+      error = Exception('Erro ao pegar categorias');
+    } finally {
+      loading = false;
+    }
   }
 
   @action
@@ -69,30 +84,45 @@ abstract class _ServiceControllerBase with Store {
   void setCategory(ServiceCategoryEntity _category) => category = _category;
 
   @action
-  void setLoading(bool _isLoading) => isLoading = _isLoading;
-
-  @action
   void setPackage(bool _package) => package = _package;
 
   @action
   void setHaveWaiting(bool _haveWaiting) => haveWaiting = _haveWaiting;
 
+  @action
   Future<ServiceEntity> updateService(ServiceEntity entity) async {
-    var result = await _editServiceUseCase(entity);
-    return result.fold(
-        (error) => throw ('error in update'), (success) => success);
+    loading = true;
+    try {
+      var result = await _editServiceUseCase(entity);
+      return result.fold(
+          (error) => throw ('error in update'), (success) => success);
+    } finally {
+      loading = false;
+    }
   }
 
+  @action
   Future<ServiceEntity> saveService(ServiceEntity serviceEntity) async {
-    var result = await _saveServiceUseCase(serviceEntity);
-    return result.fold(
-        (error) => throw ('error in insert'), (success) => success);
+    loading = true;
+    try {
+      var result = await _saveServiceUseCase(serviceEntity);
+      return result.fold(
+          (error) => throw ('error in insert'), (success) => success);
+    } finally {
+      loading = false;
+    }
   }
 
+  @action
   Future<int> deleteService(int id) async {
-    var result = await _deleteServiceUseCase(id);
-    return result.fold(
-        (error) => throw ('error in delete'), (success) => success);
+    loading = true;
+    try {
+      var result = await _deleteServiceUseCase(id);
+      return result.fold(
+          (error) => throw ('error in delete'), (success) => success);
+    } finally {
+      loading = false;
+    }
   }
 
   String convertTime(double time) {
@@ -109,7 +139,7 @@ abstract class _ServiceControllerBase with Store {
 
   @action
   String setNameCategory(int category) {
-    for (var item in listCategoryEntity!) {
+    for (var item in listCategoryEntity) {
       if (item.id == category) {
         nameCategory = item.name;
       }

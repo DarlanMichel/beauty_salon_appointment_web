@@ -22,22 +22,22 @@ class ServiceModule extends Module {
   final List<Bind> binds = [
     Bind.lazySingleton((i) => CustomHasuraConnect.getConnect()),
     //datasource
-    Bind.lazySingleton((i) => GetServiceHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => SaveServiceHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => EditServiceHasuraDataSourceImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceHasuraDataSourceImp(i())),
+    $GetServiceHasuraDataSourceImp,
+    $SaveServiceHasuraDataSourceImp,
+    $EditServiceHasuraDataSourceImp,
+    $DeleteServiceHasuraDataSourceImp,
     //repositories
-    Bind.lazySingleton((i) => GetServiceRepositoryImp(i())),
-    Bind.lazySingleton((i) => SaveServiceRepositoryImp(i())),
-    Bind.lazySingleton((i) => EditServiceRepositoryImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceRepositoryImp(i())),
+    $GetServiceRepositoryImp,
+    $SaveServiceRepositoryImp,
+    $EditServiceRepositoryImp,
+    $DeleteServiceRepositoryImp,
     //useCases
-    Bind.lazySingleton((i) => GetServiceUseCaseImp(i())),
-    Bind.lazySingleton((i) => SaveServiceUseCaseImp(i())),
-    Bind.lazySingleton((i) => EditServiceUseCaseImp(i())),
-    Bind.lazySingleton((i) => DeleteServiceUseCaseImp(i())),
+    $GetServiceUseCaseImp,
+    $SaveServiceUseCaseImp,
+    $EditServiceUseCaseImp,
+    $DeleteServiceUseCaseImp,
     //controllers
-    Bind.lazySingleton((i) => ServiceController(i(), i(), i(), i())),
+    $ServiceController,
   ];
 
   @override

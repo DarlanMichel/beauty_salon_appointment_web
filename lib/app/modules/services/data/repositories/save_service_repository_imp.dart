@@ -2,7 +2,10 @@ import 'package:beauty_salon_appointment_web/app/modules/services/data/datasourc
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/entities/service_entity.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/repositories/save_service_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+part 'save_service_repository_imp.g.dart';
 
+@Injectable(singleton: false)
 class SaveServiceRepositoryImp implements SaveServiceRepository {
   final SaveServiceDataSource _saveServiceDataSource;
   SaveServiceRepositoryImp(this._saveServiceDataSource);

@@ -1,8 +1,11 @@
 import 'package:beauty_salon_appointment_web/app/modules/services/data/datasources/get_service_datasource.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/data/dtos/service_dto.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:hasura_connect/hasura_connect.dart';
+part 'get_service_hasura_datasource_imp.g.dart';
 
+@Injectable(singleton: false)
 class GetServiceHasuraDataSourceImp implements GetServiceDataSource {
   final HasuraConnect _hasuraConnect;
   GetServiceHasuraDataSourceImp(this._hasuraConnect);

@@ -3,6 +3,17 @@
 part of 'service_controller.dart';
 
 // **************************************************************************
+// InjectionGenerator
+// **************************************************************************
+
+final $ServiceController = BindInject(
+  (i) => ServiceController(i<GetServiceUseCase>(), i<DeleteServiceUseCase>(),
+      i<SaveServiceUseCase>(), i<EditServiceUseCase>()),
+  isSingleton: true,
+  isLazy: true,
+);
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 
@@ -13,13 +24,13 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
       Atom(name: '_ServiceControllerBase.listServiceEntity');
 
   @override
-  List<ServiceEntity>? get listServiceEntity {
+  List<ServiceEntity> get listServiceEntity {
     _$listServiceEntityAtom.reportRead();
     return super.listServiceEntity;
   }
 
   @override
-  set listServiceEntity(List<ServiceEntity>? value) {
+  set listServiceEntity(List<ServiceEntity> value) {
     _$listServiceEntityAtom.reportWrite(value, super.listServiceEntity, () {
       super.listServiceEntity = value;
     });
@@ -29,15 +40,30 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
       Atom(name: '_ServiceControllerBase.listCategoryEntity');
 
   @override
-  List<ServiceCategoryEntity>? get listCategoryEntity {
+  List<ServiceCategoryEntity> get listCategoryEntity {
     _$listCategoryEntityAtom.reportRead();
     return super.listCategoryEntity;
   }
 
   @override
-  set listCategoryEntity(List<ServiceCategoryEntity>? value) {
+  set listCategoryEntity(List<ServiceCategoryEntity> value) {
     _$listCategoryEntityAtom.reportWrite(value, super.listCategoryEntity, () {
       super.listCategoryEntity = value;
+    });
+  }
+
+  final _$errorAtom = Atom(name: '_ServiceControllerBase.error');
+
+  @override
+  Exception? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(Exception? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
     });
   }
 
@@ -101,18 +127,18 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
     });
   }
 
-  final _$isLoadingAtom = Atom(name: '_ServiceControllerBase.isLoading');
+  final _$loadingAtom = Atom(name: '_ServiceControllerBase.loading');
 
   @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
   }
 
   @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
     });
   }
 
@@ -135,7 +161,7 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
       AsyncAction('_ServiceControllerBase.getService');
 
   @override
-  Future getService() {
+  Future<void> getService() {
     return _$getServiceAsyncAction.run(() => super.getService());
   }
 
@@ -143,8 +169,32 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
       AsyncAction('_ServiceControllerBase.getCategory');
 
   @override
-  Future getCategory() {
+  Future<void> getCategory() {
     return _$getCategoryAsyncAction.run(() => super.getCategory());
+  }
+
+  final _$updateServiceAsyncAction =
+      AsyncAction('_ServiceControllerBase.updateService');
+
+  @override
+  Future<ServiceEntity> updateService(ServiceEntity entity) {
+    return _$updateServiceAsyncAction.run(() => super.updateService(entity));
+  }
+
+  final _$saveServiceAsyncAction =
+      AsyncAction('_ServiceControllerBase.saveService');
+
+  @override
+  Future<ServiceEntity> saveService(ServiceEntity serviceEntity) {
+    return _$saveServiceAsyncAction.run(() => super.saveService(serviceEntity));
+  }
+
+  final _$deleteServiceAsyncAction =
+      AsyncAction('_ServiceControllerBase.deleteService');
+
+  @override
+  Future<int> deleteService(int id) {
+    return _$deleteServiceAsyncAction.run(() => super.deleteService(id));
   }
 
   final _$_ServiceControllerBaseActionController =
@@ -167,17 +217,6 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
         name: '_ServiceControllerBase.setCategory');
     try {
       return super.setCategory(_category);
-    } finally {
-      _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setLoading(bool _isLoading) {
-    final _$actionInfo = _$_ServiceControllerBaseActionController.startAction(
-        name: '_ServiceControllerBase.setLoading');
-    try {
-      return super.setLoading(_isLoading);
     } finally {
       _$_ServiceControllerBaseActionController.endAction(_$actionInfo);
     }
@@ -221,11 +260,12 @@ mixin _$ServiceController on _ServiceControllerBase, Store {
     return '''
 listServiceEntity: ${listServiceEntity},
 listCategoryEntity: ${listCategoryEntity},
+error: ${error},
 name: ${name},
 nameCategory: ${nameCategory},
 category: ${category},
 package: ${package},
-isLoading: ${isLoading},
+loading: ${loading},
 haveWaiting: ${haveWaiting}
     ''';
   }
