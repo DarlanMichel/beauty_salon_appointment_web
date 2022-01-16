@@ -10,7 +10,7 @@ import 'package:mobx/mobx.dart';
 
 class ServiceRegistrationPage extends StatefulWidget {
   final ServiceEntity? entity;
-  const ServiceRegistrationPage({Key? key, this.entity}) : super(key: key);
+  const ServiceRegistrationPage({Key? key, @Data this.entity}) : super(key: key);
 
   @override
   _ServiceRegistrationPageState createState() =>

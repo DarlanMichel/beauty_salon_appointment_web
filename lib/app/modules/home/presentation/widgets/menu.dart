@@ -75,7 +75,9 @@ class MenuWidget extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 selected: Modular.to.path.contains('/collaborator/'),
                 selectedColor: Colors.black,
-                onTap: () {},
+                onTap: () {
+                  Modular.to.navigate('/collaborator/');
+                },
               ),
             ),
             Container(

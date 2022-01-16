@@ -1,3 +1,4 @@
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/collaborator_module.dart';
 import 'package:beauty_salon_appointment_web/app/modules/home/presentation/pages/home_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/home/presentation/widgets/content_home_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/service_category_module.dart';
@@ -15,6 +16,7 @@ class HomeModule extends Module {
       ChildRoute('/home', child: (context, args) => const ContentHomePage()),
       ModuleRoute('/serviceCategory', module: ServiceCategoryModule()),
       ModuleRoute('/service', module: ServiceModule()),
+      ModuleRoute('/collaborator', module: CollaboratorModule()),
     ]),
   ];
 }
