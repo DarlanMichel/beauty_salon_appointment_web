@@ -11,7 +11,7 @@ import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecase
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/edit_service/edit_service_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/get_service/get_service_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/save_service/save_service_usecase_imp.dart';
-import 'package:beauty_salon_appointment_web/app/modules/services/presentation/controllers/service_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/bloc/service_bloc.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/presentation/pages/service_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/presentation/pages/service_registration_page.dart';
 import 'package:beauty_salon_appointment_web/app/shared/hasura_connect.dart';
@@ -22,22 +22,22 @@ class ServiceModule extends Module {
   final List<Bind> binds = [
     Bind.lazySingleton((i) => CustomHasuraConnect.getConnect()),
     //datasource
-    $GetServiceHasuraDataSourceImp,
-    $SaveServiceHasuraDataSourceImp,
-    $EditServiceHasuraDataSourceImp,
-    $DeleteServiceHasuraDataSourceImp,
+    Bind.lazySingleton((i) => GetServiceHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceHasuraDataSourceImp(i()), export: true),
     //repositories
-    $GetServiceRepositoryImp,
-    $SaveServiceRepositoryImp,
-    $EditServiceRepositoryImp,
-    $DeleteServiceRepositoryImp,
+    Bind.lazySingleton((i) => GetServiceRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceRepositoryImp(i()), export: true),
     //useCases
-    $GetServiceUseCaseImp,
-    $SaveServiceUseCaseImp,
-    $EditServiceUseCaseImp,
-    $DeleteServiceUseCaseImp,
+    Bind.lazySingleton((i) => GetServiceUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveServiceUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => EditServiceUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteServiceUseCaseImp(i()), export: true),
     //controllers
-    $ServiceController,
+    Bind.lazySingleton((i) => ServiceBloc(i(), i(), i(), i()), export: true),
   ];
 
   @override

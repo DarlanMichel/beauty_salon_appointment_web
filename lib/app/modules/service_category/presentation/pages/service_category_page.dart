@@ -1,11 +1,11 @@
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/entities/service_category_entity.dart';
-import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/bloc/service_category_bloc.dart';
+import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/bloc/service_category_event.dart';
+import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/bloc/service_category_state.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/widgets/card_service_category.dart';
-import 'package:beauty_salon_appointment_web/app/shared/custom_overlay.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:mobx/mobx.dart';
 
 class ServiceCategoryPage extends StatefulWidget {
   const ServiceCategoryPage({Key? key}) : super(key: key);
@@ -15,31 +15,31 @@ class ServiceCategoryPage extends StatefulWidget {
 }
 
 class _ServiceCategoryPageState
-    extends ModularState<ServiceCategoryPage, ServiceCategoryController> {
-  final overlayLoading = OverlayEntry(builder: (_) {
-    return const CustomOverlay();
-  });
-
+    extends ModularState<ServiceCategoryPage, ServiceCategoryBloc> {
   @override
   void initState() {
     super.initState();
-    reaction((_) => controller.error, (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Colors.red,
-      ));
-    });
-
-    reaction<bool>((_) => controller.loading, (isLoading) {
-      if (isLoading) {
-        Overlay.of(context)?.insert(overlayLoading);
-      } else {
-        overlayLoading.remove();
-      }
-    });
-
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      controller.getServiceCategory();
+      bloc.add(const ServiceCategoryFetchList());
+    });
+
+    bloc.stream.listen((state) {
+      if (state is ServiceCategoryStateError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(state.error.toString()),
+          backgroundColor: Colors.red,
+        ));
+        bloc.add(const ServiceCategoryFetchList());
+      }
+      if(state is ServiceCategoryStateDeleted){
+        showDialog(
+            context: context,
+            builder: (_) => const AlertDialog(
+              title: Text(
+                  'Categoria removida com sucesso!'),
+            ));
+        bloc.add(const ServiceCategoryFetchList());
+      }
     });
   }
 
@@ -66,46 +66,58 @@ class _ServiceCategoryPageState
             const SizedBox(
               height: 50,
             ),
-            Observer(builder: (context) {
-              if (controller.listServiceCategoryEntity.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                );
-              } else {
-                List<ServiceCategoryEntity> listCategory =
-                    controller.listServiceCategoryEntity;
-                return LayoutBuilder(builder: (context, constraints) {
-                  if (constraints.maxWidth < 900) {
-                    return ListView.builder(
-                        itemCount: listCategory.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i) {
-                          ServiceCategoryEntity category = listCategory[i];
-                          return CardServiceCategory(
-                            category: category,
-                          );
-                        });
-                  } else {
-                    return GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 15,
-                                crossAxisCount: 2,
-                                mainAxisExtent: 160),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: listCategory.length,
-                        itemBuilder: (context, i) {
-                          ServiceCategoryEntity category = listCategory[i];
-                          return CardServiceCategory(
-                            category: category,
-                          );
-                        });
+            BlocBuilder<ServiceCategoryBloc, ServiceCategoryState>(
+                bloc: bloc,
+                builder: (context, state) {
+                  if (state is ServiceCategoryStateLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
-                });
-              }
-            }),
+                  if (state is ServiceCategoryStateSuccess) {
+                    if (state.listServiceCategoryEntity.isEmpty) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                      );
+                    } else {
+                      List<ServiceCategoryEntity> listCategory =
+                          state.listServiceCategoryEntity;
+                      return LayoutBuilder(builder: (context, constraints) {
+                        if (constraints.maxWidth < 900) {
+                          return ListView.builder(
+                              itemCount: listCategory.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, i) {
+                                ServiceCategoryEntity category =
+                                    listCategory[i];
+                                return CardServiceCategory(
+                                  category: category,
+                                );
+                              });
+                        } else {
+                          return GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 15,
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 160),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: listCategory.length,
+                              itemBuilder: (context, i) {
+                                ServiceCategoryEntity category =
+                                    listCategory[i];
+                                return CardServiceCategory(
+                                  category: category,
+                                );
+                              });
+                        }
+                      });
+                    }
+                  }
+                  return Container();
+                }),
             Padding(
               padding: const EdgeInsets.only(bottom: 12, top: 30),
               child: Align(

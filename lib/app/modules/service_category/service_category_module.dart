@@ -10,7 +10,7 @@ import 'package:beauty_salon_appointment_web/app/modules/service_category/domain
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/edit_service_category/edit_service_category_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/get_service_category/get_service_category_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/save_service_category/save_service_category_usecase_imp.dart';
-import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/controllers/service_category_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/bloc/service_category_bloc.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/pages/service_category_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/presentation/pages/service_category_registration_page.dart';
 import 'package:beauty_salon_appointment_web/app/shared/hasura_connect.dart';
@@ -36,7 +36,7 @@ class ServiceCategoryModule extends Module {
     Bind.lazySingleton((i) => EditServiceCategoryUseCaseImp(i()), export: true),
     Bind.lazySingleton((i) => DeleteServiceCategoryUseCaseImp(i()), export: true),
     //controllers
-    Bind.lazySingleton((i) => ServiceCategoryController(i(), i(), i(), i()), export: true),
+    Bind.lazySingleton((i) => ServiceCategoryBloc(i(), i(), i(), i()), export: true),
   ];
 
   @override

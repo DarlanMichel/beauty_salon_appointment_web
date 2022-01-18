@@ -1,11 +1,11 @@
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/entities/service_entity.dart';
-import 'package:beauty_salon_appointment_web/app/modules/services/presentation/controllers/service_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/bloc/service_bloc.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/bloc/service_event.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/presentation/bloc/service_state.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/presentation/widgets/card_service.dart';
-import 'package:beauty_salon_appointment_web/app/shared/custom_overlay.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:mobx/mobx.dart';
 
 class ServicePage extends StatefulWidget {
   const ServicePage({Key? key}) : super(key: key);
@@ -14,32 +14,30 @@ class ServicePage extends StatefulWidget {
   _ServicesPageState createState() => _ServicesPageState();
 }
 
-class _ServicesPageState extends ModularState<ServicePage, ServiceController> {
-  final overlayLoading = OverlayEntry(builder: (_) {
-    return const CustomOverlay();
-  });
-
+class _ServicesPageState extends ModularState<ServicePage, ServiceBloc> {
   @override
   void initState() {
     super.initState();
-    reaction((_) => controller.error, (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Colors.red,
-      ));
-    });
-
-    reaction<bool>((_) => controller.loading, (isLoading) {
-      if (isLoading) {
-        Overlay.of(context)?.insert(overlayLoading);
-      } else {
-        overlayLoading.remove();
-      }
-    });
-
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      controller.getService();
-      controller.getCategory();
+      bloc.add(const ServiceFetchList());
+    });
+
+    bloc.stream.listen((state) {
+      if (state is ServiceStateError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(state.error.toString()),
+          backgroundColor: Colors.red,
+        ));
+        bloc.add(const ServiceFetchList());
+      }
+      if (state is ServiceStateDeleted) {
+        showDialog(
+            context: context,
+            builder: (_) => const AlertDialog(
+                  title: Text('Serviço removido com sucesso!'),
+                ));
+        bloc.add(const ServiceFetchList());
+      }
     });
   }
 
@@ -66,45 +64,55 @@ class _ServicesPageState extends ModularState<ServicePage, ServiceController> {
             const SizedBox(
               height: 50,
             ),
-            Observer(builder: (context) {
-              if (controller.listServiceEntity.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                );
-              } else {
-                List<ServiceEntity> listService = controller.listServiceEntity;
-                return LayoutBuilder(builder: (context, constraints) {
-                  if (constraints.maxWidth < 900) {
-                    return ListView.builder(
-                        itemCount: listService.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i) {
-                          ServiceEntity service = listService[i];
-                          return CardService(
-                            service: service,
-                          );
-                        });
-                  } else {
-                    return GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 15,
-                                crossAxisCount: 2,
-                                mainAxisExtent: 160),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: listService.length,
-                        itemBuilder: (context, i) {
-                          ServiceEntity service = listService[i];
-                          return CardService(
-                            service: service,
-                          );
-                        });
+            BlocBuilder<ServiceBloc, ServiceState>(
+                bloc: bloc,
+                builder: (context, state) {
+                  if (state is ServiceStateLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
-                });
-              }
-            }),
+                  if (state is ServiceStateSuccess) {
+                    if (state.listServiceEntity.isEmpty) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                      );
+                    } else {
+                      List<ServiceEntity> listService = state.listServiceEntity;
+                      return LayoutBuilder(builder: (context, constraints) {
+                        if (constraints.maxWidth < 900) {
+                          return ListView.builder(
+                              itemCount: listService.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, i) {
+                                ServiceEntity service = listService[i];
+                                return CardService(
+                                  service: service,
+                                );
+                              });
+                        } else {
+                          return GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 15,
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 160),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: listService.length,
+                              itemBuilder: (context, i) {
+                                ServiceEntity service = listService[i];
+                                return CardService(
+                                  service: service,
+                                );
+                              });
+                        }
+                      });
+                    }
+                  }
+                  return Container();
+                }),
             Padding(
               padding: const EdgeInsets.only(bottom: 12, top: 30),
               child: Align(

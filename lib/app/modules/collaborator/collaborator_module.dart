@@ -10,8 +10,9 @@ import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/use
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/edit_collaborator/edit_collaborator_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/get_collaborator/get_collaborator_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/save_collaborator/save_collaborator_usecase_imp.dart';
-import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/controllers/collaborator_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/bloc/collaborator_bloc.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/pages/collaborator_page.dart';
+import 'package:beauty_salon_appointment_web/app/modules/services/service_module.dart';
 import 'package:beauty_salon_appointment_web/app/shared/hasura_connect.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -20,22 +21,27 @@ class CollaboratorModule extends Module {
   final List<Bind> binds = [
     Bind.lazySingleton((i) => CustomHasuraConnect.getConnect()),
     //datasource
-    $GetCollaboratorHasuraDataSourceImp,
-    $SaveCollaboratorHasuraDataSourceImp,
-    $EditCollaboratorHasuraDataSourceImp,
-    $DeleteCollaboratorHasuraDataSourceImp,
+    Bind.lazySingleton((i) => GetCollaboratorHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveCollaboratorHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => EditCollaboratorHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorHasuraDataSourceImp(i()), export: true),
     //repositories
-    $GetCollaboratorRepositoryImp,
-    $SaveCollaboratorRepositoryImp,
-    $EditCollaboratorRepositoryImp,
-    $DeleteCollaboratorRepositoryImp,
+    Bind.lazySingleton((i) => GetCollaboratorRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveCollaboratorRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => EditCollaboratorRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorRepositoryImp(i()), export: true),
     //useCases
-    $GetCollaboratorUseCaseImp,
-    $SaveCollaboratorUseCaseImp,
-    $EditCollaboratorUseCaseImp,
-    $DeleteCollaboratorUseCaseImp,
+    Bind.lazySingleton((i) => GetCollaboratorUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => SaveCollaboratorUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => EditCollaboratorUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorUseCaseImp(i()), export: true),
     //controllers
-    $CollaboratorController,
+    Bind.lazySingleton((i) => CollaboratorBloc(i(), i(), i(), i()), export: true),
+  ];
+
+  @override
+  List<Module> get imports => [
+    ServiceModule()
   ];
 
   @override

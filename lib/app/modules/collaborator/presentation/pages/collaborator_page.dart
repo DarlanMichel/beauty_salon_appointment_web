@@ -1,11 +1,11 @@
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/entities/collaborator_entity.dart';
-import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/controllers/collaborator_controller.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/bloc/collaborator_bloc.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/bloc/collaborator_event.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/bloc/collaborator_state.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/widgets/card_collaborator.dart';
-import 'package:beauty_salon_appointment_web/app/shared/custom_overlay.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:mobx/mobx.dart';
 
 class CollaboratorPage extends StatefulWidget {
   const CollaboratorPage({Key? key}) : super(key: key);
@@ -14,31 +14,31 @@ class CollaboratorPage extends StatefulWidget {
   _CollaboratorPageState createState() => _CollaboratorPageState();
 }
 
-class _CollaboratorPageState extends ModularState<CollaboratorPage, CollaboratorController> {
-  final overlayLoading = OverlayEntry(builder: (_) {
-    return const CustomOverlay();
-  });
-
+class _CollaboratorPageState
+    extends ModularState<CollaboratorPage, CollaboratorBloc> {
   @override
   void initState() {
     super.initState();
-    reaction((_) => controller.error, (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Colors.red,
-      ));
-    });
-
-    reaction<bool>((_) => controller.loading, (isLoading) {
-      if (isLoading) {
-        Overlay.of(context)?.insert(overlayLoading);
-      } else {
-        overlayLoading.remove();
-      }
-    });
-
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      controller.getCollaborator();
+      bloc.add(const CollaboratorFetchList());
+    });
+
+    bloc.stream.listen((state) {
+      if (state is CollaboratorStateError) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(state.error.toString()),
+          backgroundColor: Colors.red,
+        ));
+        bloc.add(const CollaboratorFetchList());
+      }
+      if (state is CollaboratorStateDeleted) {
+        showDialog(
+            context: context,
+            builder: (_) => const AlertDialog(
+                  title: Text('Colaborador removido com sucesso!'),
+                ));
+        bloc.add(const CollaboratorFetchList());
+      }
     });
   }
 
@@ -65,46 +65,58 @@ class _CollaboratorPageState extends ModularState<CollaboratorPage, Collaborator
             const SizedBox(
               height: 50,
             ),
-            Observer(builder: (context) {
-              if (controller.listCollaboratorEntity.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                );
-              } else {
-                List<CollaboratorEntity> listCollaborator =
-                    controller.listCollaboratorEntity;
-                return LayoutBuilder(builder: (context, constraints) {
-                  if (constraints.maxWidth < 900) {
-                    return ListView.builder(
-                        itemCount: listCollaborator.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i) {
-                          CollaboratorEntity collaborator = listCollaborator[i];
-                          return CardCollaborator(
-                            collaborator: collaborator,
-                          );
-                        });
-                  } else {
-                    return GridView.builder(
-                        gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisSpacing: 15,
-                            crossAxisCount: 2,
-                            mainAxisExtent: 160),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: listCollaborator.length,
-                        itemBuilder: (context, i) {
-                          CollaboratorEntity collaborator = listCollaborator[i];
-                          return CardCollaborator(
-                            collaborator: collaborator,
-                          );
-                        });
+            BlocBuilder<CollaboratorBloc, CollaboratorState>(
+                bloc: bloc,
+                builder: (context, state) {
+                  if (state is CollaboratorStateLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
-                });
-              }
-            }),
+                  if (state is CollaboratorStateSuccess) {
+                    if (state.listCollaboratorEntity.isEmpty) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                      );
+                    } else {
+                      List<CollaboratorEntity> listCollaborator =
+                          state.listCollaboratorEntity;
+                      return LayoutBuilder(builder: (context, constraints) {
+                        if (constraints.maxWidth < 900) {
+                          return ListView.builder(
+                              itemCount: listCollaborator.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, i) {
+                                CollaboratorEntity collaborator =
+                                    listCollaborator[i];
+                                return CardCollaborator(
+                                  collaborator: collaborator,
+                                );
+                              });
+                        } else {
+                          return GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 15,
+                                      crossAxisCount: 2,
+                                      mainAxisExtent: 160),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: listCollaborator.length,
+                              itemBuilder: (context, i) {
+                                CollaboratorEntity collaborator =
+                                    listCollaborator[i];
+                                return CardCollaborator(
+                                  collaborator: collaborator,
+                                );
+                              });
+                        }
+                      });
+                    }
+                  }
+                  return Container();
+                }),
             Padding(
               padding: const EdgeInsets.only(bottom: 12, top: 30),
               child: Align(
@@ -122,7 +134,7 @@ class _CollaboratorPageState extends ModularState<CollaboratorPage, Collaborator
                   ),
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).colorScheme.secondary,
-                    fixedSize: const Size(150, 40),
+                    fixedSize: const Size(175, 40),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                   ),
