@@ -26,7 +26,7 @@ class DeleteCollaboratorHasuraDataSourceImp implements DeleteCollaboratorDataSou
 
       return Right(affectedRow);
     } catch (e) {
-      return Left(Exception('Hasura datasource error'));
+      return Left(Exception(e));
     }
   }
 }

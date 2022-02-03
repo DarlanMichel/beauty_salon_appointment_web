@@ -45,7 +45,7 @@ class GetCollaboratorHasuraDataSourceImp implements GetCollaboratorDataSource {
       }
       return Right(listCollaborators);
     } catch (e) {
-      return Left(Exception('Hasura datasource error'));
+      return Left(Exception(e));
     }
   }
 }

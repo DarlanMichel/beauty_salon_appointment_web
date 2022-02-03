@@ -18,23 +18,11 @@ class SaveCollaboratorHasuraDataSourceImp implements SaveCollaboratorDataSource 
     try {
       CollaboratorDto serviceDto;
       var query = '''
-        mutation saveCollaborator(\$name: String, \$picture: String, \$end_evening: numeric, \$end_morning: numeric, \$start_evening: numeric, \$start_morning: numeric, \$week: String, \$percentage: numeric, \$price: numeric, \$service: Int){
-          insert_services_one(object: {name: \$name, picture: \$picture, collaborators_schedules: {data: {end_evening: \$end_evening, end_morning: \$end_morning, start_evening: \$start_evening, start_morning: \$start_morning, week: \$week}}, collaborators_services: {data: {percentage: \$percentage, price: \$price, service: \$service}}}) {
+        mutation saveCollaborator(\$name: String, \$picture: String,){
+          insert_collaborators_one(object: {name: \$name, picture: \$picture}) {
             id
             name
             picture
-            collaborators_schedules {
-              end_evening
-              end_morning
-              start_evening
-              start_morning
-              week
-            }
-            collaborators_services {
-              service
-              price
-              percentage
-            }
           }
         } ''';
       var snapshot = await _hasuraConnect.mutation(query, variables: {
@@ -43,9 +31,45 @@ class SaveCollaboratorHasuraDataSourceImp implements SaveCollaboratorDataSource 
       });
       serviceDto = CollaboratorDto.fromJson(snapshot['data']['insert_collaborators_one']);
 
+      if(collaboratorEntity.servicesProvided!.isNotEmpty){
+        for(var service in collaboratorEntity.servicesProvided!){
+          var query = '''
+        mutation saveCollaborator(\$percentage: numeric, \$price: numeric, \$service: Int, \$collaborator: Int){
+          insert_collaborators_services(objects: {collaborator: \$collaborator, percentage: \$percentage, price: \$price, service: \$service}) {
+            affected_rows
+          }
+        } ''';
+          await _hasuraConnect.mutation(query, variables: {
+            "percentage": service.percentage,
+            "price": service.price,
+            "service": service.service,
+            "collaborator": serviceDto.id,
+          });
+        }
+      }
+
+      if(collaboratorEntity.schedules!.isNotEmpty){
+        for(var schedule in collaboratorEntity.schedules!){
+          var query = '''
+        mutation saveCollaborator(\$week: String, \$start_morning: numeric, \$start_evening: numeric, \$end_morning: numeric, \$end_evening: numeric, \$collaborator: Int){
+          insert_collaborators_schedules(objects: {collaborator: \$collaborator, end_evening: \$end_evening, end_morning: \$end_morning, start_evening: \$start_evening, start_morning: \$start_morning, week: \$week}) {
+            affected_rows
+          }
+        } ''';
+          await _hasuraConnect.mutation(query, variables: {
+            "collaborator": serviceDto.id,
+            "end_evening": schedule.endEvening,
+            "end_morning": schedule.endMorning,
+            "start_evening": schedule.startEvening,
+            "start_morning": schedule.startMorning,
+            "week": schedule.week,
+          });
+        }
+      }
+
       return Right(serviceDto);
     } catch (e) {
-      return Left(Exception('Hasura datasource error'));
+      return Left(Exception(e));
     }
   }
 }

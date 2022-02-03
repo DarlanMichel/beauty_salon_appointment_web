@@ -12,6 +12,7 @@ import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/use
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/save_collaborator/save_collaborator_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/bloc/collaborator_bloc.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/pages/collaborator_page.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/presentation/pages/collaborator_registration_page.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/service_module.dart';
 import 'package:beauty_salon_appointment_web/app/shared/hasura_connect.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -48,10 +49,10 @@ class CollaboratorModule extends Module {
   final List<ModularRoute> routes = [
     ChildRoute(Modular.initialRoute,
         child: (context, args) => const CollaboratorPage()),
-    // ChildRoute('/new',
-    //     child: (context, args) => CollaboratorRegistrationPage(
-    //         entity: args.data
-    //     ))
+    ChildRoute('/new',
+        child: (context, args) => CollaboratorRegistrationPage(
+            entity: args.data
+        ))
   ];
 
 }

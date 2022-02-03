@@ -40,11 +40,17 @@ class CardCollaborator extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 70,
                       backgroundColor: const Color.fromRGBO(196, 196, 196, 1),
-                      child: Image.network(
-                        collaborator.picture,
-                        height: 90,
-                        width: 90,
-                      ),
+                      child: ClipOval(
+                        child: SizedBox.fromSize(
+                          size: const Size.fromRadius(70),
+                          child: Image.network(
+                            collaborator.picture,
+                            height: 90,
+                            width: 90,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
                     )),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,38 +82,42 @@ class CardCollaborator extends StatelessWidget {
                           return const CircularProgressIndicator();
                         }
                         if(state is ServiceStateSuccess){
-                          return SizedBox(
-                            height: 35,
-                            child: ListView.builder(
-                                itemCount: collaborator.servicesProvided.length,
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (_, i) {
-                                  CollaboratorServicesEntity service =
-                                  collaborator.servicesProvided[i];
-                                  String nameService = '';
-                                  for (var item in state.listServiceEntity) {
-                                    if (item.id == service.service) {
-                                      nameService = item.name;
+                          if(collaborator.servicesProvided == null){
+                            return Container();
+                          }else{
+                            return SizedBox(
+                              height: 35,
+                              child: ListView.builder(
+                                  itemCount: collaborator.servicesProvided!.length,
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemBuilder: (_, i) {
+                                    CollaboratorServicesEntity service =
+                                    collaborator.servicesProvided![i];
+                                    String nameService = '';
+                                    for (var item in state.listServiceEntity) {
+                                      if (item.id == service.service) {
+                                        nameService = item.name;
+                                      }
                                     }
-                                  }
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(30),
-                                          color: Colors.grey),
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(
-                                        nameService,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(30),
+                                            color: Colors.grey),
+                                        padding: const EdgeInsets.all(8),
+                                        child: Text(
+                                          nameService,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }),
-                          );
+                                    );
+                                  }),
+                            );
+                          }
                         }
                         return Container();
                       }

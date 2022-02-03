@@ -5,13 +5,13 @@ class CollaboratorEntity {
   int? id;
   String name;
   String picture;
-  List<CollaboratorServicesEntity> servicesProvided;
-  List<CollaboratorSchedulesEntity> schedules;
+  List<CollaboratorServicesEntity>? servicesProvided;
+  List<CollaboratorSchedulesEntity>? schedules;
 
   CollaboratorEntity(
       {this.id,
       required this.name,
       required this.picture,
-      required this.servicesProvided,
-      required this.schedules});
+      this.servicesProvided,
+      this.schedules});
 }
