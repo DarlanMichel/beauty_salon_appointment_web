@@ -13,6 +13,25 @@ class DeleteCollaboratorHasuraDataSourceImp implements DeleteCollaboratorDataSou
   Future<Either<Exception, int>> call(int id) async {
     try {
       int affectedRow = 0;
+
+      var sheduleQuery = '''
+        mutation deleteSchedule(\$id: Int){
+          delete_collaborators_schedules(where: {collaborator: {_eq: \$id}}) {
+            affected_rows
+          }
+        } ''';
+
+      await _hasuraConnect.mutation(sheduleQuery, variables: {"id": id});
+
+      var serviceQuery = '''
+        mutation deleteService(\$id: Int){
+          delete_collaborators_services(where: {collaborator: {_eq: \$id}}) {
+            affected_rows
+          }
+        } ''';
+
+      await _hasuraConnect.mutation(serviceQuery, variables: {"id": id});
+
       var query = '''
         mutation deleteCollaborator(\$id: Int){
           delete_collaborators(where: {id: {_eq: \$id}}) {

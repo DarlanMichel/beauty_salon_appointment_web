@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/delete_service/delete_service_usecase.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/edit_service/edit_service_usecase.dart';
 import 'package:beauty_salon_appointment_web/app/modules/services/domain/usecases/get_service/get_service_usecase.dart';
@@ -22,7 +21,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<ServiceInsert>(_insert);
   }
 
-  FutureOr<ServiceState?> _fetchList(
+  void _fetchList(
       ServiceFetchList event, Emitter<ServiceState> emit) async {
     emit(ServiceStateLoading());
 
@@ -35,7 +34,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     }
   }
 
-  FutureOr<ServiceState?> _delete(
+  void _delete(
       ServiceDelete event, Emitter<ServiceState> emit) async {
     emit(ServiceStateLoading());
 
@@ -48,7 +47,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     }
   }
 
-  FutureOr<ServiceState?> _update(
+  void _update(
       ServiceUpdate event, Emitter<ServiceState> emit) async {
     emit(ServiceStateLoading());
 
@@ -61,7 +60,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     }
   }
 
-  FutureOr<ServiceState?> _insert(
+  void _insert(
       ServiceInsert event, Emitter<ServiceState> emit) async {
     emit(ServiceStateLoading());
 

@@ -1,12 +1,15 @@
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/datasources/hasura/delete_collaborator_hasura_datasource_imp.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/datasources/hasura/delete_collaborator_service_hasura_datasource_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/datasources/hasura/edit_collaborator_hasura_datasource_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/datasources/hasura/get_collaborator_hasura_datasource_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/datasources/hasura/save_collaborator_hasura_datasource_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/repositories/delete_collaborator_repository_imp.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/repositories/delete_collaborator_service_repository_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/repositories/edit_collaborator_repository_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/repositories/get_collaborator_repository_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/data/repositories/save_collaborator_repository_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/delete_collaborator/delete_collaborator_usecase_imp.dart';
+import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/delete_collaborator_service/delete_collaborator_service_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/edit_collaborator/edit_collaborator_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/get_collaborator/get_collaborator_usecase_imp.dart';
 import 'package:beauty_salon_appointment_web/app/modules/collaborator/domain/usecases/save_collaborator/save_collaborator_usecase_imp.dart';
@@ -26,18 +29,21 @@ class CollaboratorModule extends Module {
     Bind.lazySingleton((i) => SaveCollaboratorHasuraDataSourceImp(i()), export: true),
     Bind.lazySingleton((i) => EditCollaboratorHasuraDataSourceImp(i()), export: true),
     Bind.lazySingleton((i) => DeleteCollaboratorHasuraDataSourceImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorServiceHasuraDataSourceImp(i()), export: true),
     //repositories
     Bind.lazySingleton((i) => GetCollaboratorRepositoryImp(i()), export: true),
     Bind.lazySingleton((i) => SaveCollaboratorRepositoryImp(i()), export: true),
     Bind.lazySingleton((i) => EditCollaboratorRepositoryImp(i()), export: true),
     Bind.lazySingleton((i) => DeleteCollaboratorRepositoryImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorServiceRepositoryImp(i()), export: true),
     //useCases
     Bind.lazySingleton((i) => GetCollaboratorUseCaseImp(i()), export: true),
     Bind.lazySingleton((i) => SaveCollaboratorUseCaseImp(i()), export: true),
     Bind.lazySingleton((i) => EditCollaboratorUseCaseImp(i()), export: true),
     Bind.lazySingleton((i) => DeleteCollaboratorUseCaseImp(i()), export: true),
+    Bind.lazySingleton((i) => DeleteCollaboratorServiceUseCaseImp(i()), export: true),
     //controllers
-    Bind.lazySingleton((i) => CollaboratorBloc(i(), i(), i(), i()), export: true),
+    Bind.lazySingleton((i) => CollaboratorBloc(i(), i(), i(), i(), i()), export: true),
   ];
 
   @override

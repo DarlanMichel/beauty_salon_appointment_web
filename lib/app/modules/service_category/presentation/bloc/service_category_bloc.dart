@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/delete_service_category/delete_service_category_usecase.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/edit_service_category/edit_service_category_usecase.dart';
 import 'package:beauty_salon_appointment_web/app/modules/service_category/domain/usecases/get_service_category/get_service_category_usecase.dart';
@@ -26,7 +25,7 @@ class ServiceCategoryBloc
     on<ServiceCategoryInsert>(_insert);
   }
 
-  FutureOr<ServiceCategoryState?> _fetchList(ServiceCategoryFetchList event,
+  void _fetchList(ServiceCategoryFetchList event,
       Emitter<ServiceCategoryState> emit) async {
     emit(ServiceCategoryStateLoading());
 
@@ -39,7 +38,7 @@ class ServiceCategoryBloc
     }
   }
 
-  FutureOr<ServiceCategoryState?> _delete(
+  void _delete(
       ServiceCategoryDelete event, Emitter<ServiceCategoryState> emit) async {
     emit(ServiceCategoryStateLoading());
 
@@ -52,7 +51,7 @@ class ServiceCategoryBloc
     }
   }
 
-  FutureOr<ServiceCategoryState?> _update(
+  void _update(
       ServiceCategoryUpdate event, Emitter<ServiceCategoryState> emit) async {
     emit(ServiceCategoryStateLoading());
 
@@ -65,7 +64,7 @@ class ServiceCategoryBloc
     }
   }
 
-  FutureOr<ServiceCategoryState?> _insert(
+  void _insert(
       ServiceCategoryInsert event, Emitter<ServiceCategoryState> emit) async {
     emit(ServiceCategoryStateLoading());
 

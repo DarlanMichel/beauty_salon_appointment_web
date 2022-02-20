@@ -33,3 +33,10 @@ class CollaboratorInsert extends CollaboratorEvent {
   @override
   List<Object> get props => [entity];
 }
+
+class CollaboratorServiceDelete extends CollaboratorEvent {
+  final int id;
+  const CollaboratorServiceDelete(this.id);
+  @override
+  List<Object> get props => [id];
+}

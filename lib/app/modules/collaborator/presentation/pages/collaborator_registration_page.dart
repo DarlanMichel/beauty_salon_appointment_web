@@ -51,10 +51,10 @@ class _CollaboratorRegistrationPageState
     if (widget.entity != null) {
       picture = widget.entity?.picture;
       name = widget.entity!.name;
-      if(widget.entity!.servicesProvided != null){
+      if (widget.entity!.servicesProvided != null) {
         listCollaboratorServices.addAll(widget.entity!.servicesProvided!);
       }
-      if(widget.entity!.schedules != null){
+      if (widget.entity!.schedules != null) {
         listCollaboratorSchedules.addAll(widget.entity!.schedules!);
       }
     }
@@ -111,11 +111,15 @@ class _CollaboratorRegistrationPageState
                               backgroundColor:
                                   const Color.fromRGBO(196, 196, 196, 1),
                               child: picture != null
-                                  ? Image.network(
-                                      picture!,
-                                      height: 90,
-                                      width: 90,
-                                    )
+                                  ? ClipOval(
+                                    child: SizedBox.fromSize(
+                                      size: const Size.fromRadius(70),
+                                      child: Image.network(
+                                          picture!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                    ),
+                                  )
                                   : imageMemory == null
                                       ? Container()
                                       : ClipOval(
@@ -213,9 +217,8 @@ class _CollaboratorRegistrationPageState
                                               ElevatedButton(
                                                 onPressed: () async {
                                                   await _initializeControllerFuture;
-                                                  image =
-                                                      await _controller
-                                                          .takePicture();
+                                                  image = await _controller
+                                                      .takePicture();
                                                   imageMemory =
                                                       await image.readAsBytes();
                                                   setState(() {
@@ -500,6 +503,9 @@ class _CollaboratorRegistrationPageState
                                             setState(() {
                                               listCollaboratorServices
                                                   .remove(service);
+                                              bloc.add(
+                                                  CollaboratorServiceDelete(
+                                                      service.id!));
                                             });
                                           },
                                           child: const Icon(
