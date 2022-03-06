@@ -1,16 +1,32 @@
-# beauty_salon_appointment_web
+# Beauty Salon Appointment Web
+Este projeto é uma aplicação web para manutenção de um salão de beleza.
 
-A new Flutter project.
+#
 
-## Getting Started
+<img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 
-This project is a starting point for a Flutter application.
+#
 
-A few resources to get you started if this is your first Flutter project:
+## Tecnologias usadas
+- Dart, Flutter
+- Bloc
+- Modular
+- Hasura
+- Clean Arch
+- Cloudinary
+- Responsividade
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Como usar a aplicação
+A aplicação web contém uma tela para cadastro e manutenção de categorias de serviços.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Após a criação das categorias é possivel cadastrar ou editar os serviços que serão elaborados pelos colaboradores do salão.
+
+Quando tiver os serviços cadastrados é possivel cadastrar o colaborador com quais serviços ele presta e quais os horários disponíveis.
+
+Outras funcionalidades a ser implementadas...
+
+## Prints de algumas telas
+
+[<img src="images/tela_categoria.jpg" width="800"/>](images/tela_categoria.jpg)
+[<img src="images/tela_servico.jpg" width="800"/>](images/tela_servico.jpg)
+[<img src="images/tela_colaborador.jpg" width="800"/>](images/tela_colaborador.jpg)
